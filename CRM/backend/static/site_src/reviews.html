@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DON Хот-Дог</title>
+    <link rel="shortcut icon" href="img/head.png" type="image/png">
+    <link rel="stylesheet" href="reviews.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <article class="logotip">
+            <a href="index.html"><img src="img/logo.svg" id="logo"></a>
+        </article>
+        <article class="city">
+            <img src="img/planet.svg" id="planet">
+            <select id="city">
+                <option>Великий Новгород</option>
+                <option>Москва</option>
+                <option>Санкт-Петербург</option>
+            </select>
+        </article>
+        <nav>
+            <a href="#" id="first">О Don Хот-Дог</a>
+            <a href="index.html#block_2">Заведения</a>
+            <a href="work.html">Работа</a>
+            <a href="reviews.html">Оставить отзыв</a>
+            <a href="menu.html">Меню</a>
+            <a href="#" id="last">Контакты</a>
+        </nav>
+        <article class="img">
+            <a href="https://yandex.ru/maps/-/CDF9IXyX"><img src="img/Yandex.svg" width="35"></a>
+            <a href="#"><img src="img/tryba.svg" id="tryba" width="35"></a>
+            <a href="https://vk.com/donhotdog53"><img src="img/Vk.svg" width="35"></a>
+        </article>
+        </nav>
+        <a href="basket.html"><img src="img/korzina.svg" id="korzina"></a>
+        <a href="profil.html"><img src="img/profil.svg" id="profil"></a>
+    </header>
+    <h1>Оцени качество в заведении</h1>
+    <h2>Твой отзыв даст понимание, удовлетворили ли мы твои потребности<br>и поможет нам стать лучше!</h2>
+    <section class="form">
+        <p class="zagol">1) Оцени качество сервиса</p>
+        <p class="podzagol">Персонал был вежлив и учтив. Тебя поприветствовали, уточнили<br>
+            потребности, уделяли внимание на протяжении обслуживания,<br>
+            попрощались. Сам персонал выглядел опрятно.</p>
+        <input class="range" id="range" type="range" min="0" max="10" step="1" value="0">
+        <article class="nums">
+            <p class="num_1">0</p>
+            <p class="num_2">10</p>
+        </article>
+        <span class="value" id="value">0</span>
+    </section>
+    <section class="form">
+        <p class="zagol">2) Оцени качество продукта</p>
+        <p class="podzagol">Ты доволен качеством напитков и еды? Продукт удовлетворил<br>твои потребности и
+            соответствовал ожиданиям?</p>
+        <input class="range" id="range_2" type="range" min="0" max="10" step="1" value="0">
+        <article class="nums">
+            <p class="num_1">0</p>
+            <p class="num_2">10</p>
+        </article>
+        <span class="value" id="value_2">0</span>
+    </section>
+    <section class="form">
+        <p class="zagol">3) Оцени оформление\внешний вид</p>
+        <p class="podzagol">На внутренней и внешней территории заведения были чистота и<br>порядок? Интерьер приятный,
+            располагает? Расположение<br>заведения удобное?</p>
+        <input class="range" id="range_3" type="range" min="0" max="10" step="1" value="0">
+        <article class="nums">
+            <p class="num_1">0</p>
+            <p class="num_2">10</p>
+        </article>
+        <span class="value" id="value_3">0</span>
+    </section>
+    <section class="form">
+        <p class="zagol">4) Насколько вероятно, что вы порекомендуете нас<br>другу, коллеге или родственнику?</p>
+        <input class="range" id="range_4" type="range" min="0" max="10" step="1" value="0">
+        <article class="nums">
+            <p class="num_1">0</p>
+            <p class="num_2">10</p>
+        </article>
+        <span class="value" id="value_4">0</span>
+    </section>
+    <section class="form">
+        <p class="zagol">5) Напиши, чем ты доволен и что мы можем<br>улучшить в своей работе:</p>
+        <p class="podzagol">Чем мы можем гордиться, а что исправить в своей работе?</p>
+        <input id="goodComment" class="input_txt" type="text" placeholder="Ваш ответ">
+        </article>
+    </section>
+    <section class="form">
+        <p class="zagol">6) Укажи адрес, по которому ты<br>оставляешь отзыв</p>
+        <p class="podzagol">Город, улица, дом</p>
+        <input id="adress" class="input_txt" type="text" placeholder="Ваш ответ">
+        </article>
+    </section>
+    <button id="sendButton">Отправить отзыв</button>
+
+
+    <footer>
+        <section class="nav">
+            <a href="index.html"><img src="img/logo.svg" id="logo_footer"></a>
+            <a href="#"><img src="img/tryba.svg" id="tryba_2"></a>
+            <a href="https://vk.com/donhotdog53"><img src="img/Vk.svg"></a>
+            <a href="https://yandex.ru/maps/-/CDF9IXyX"><img src="img/Yandex.svg"></a>
+        </section>
+        <section class="main">
+            <p class="zagolovok">DON ХОТ-ДОГ</p>
+            <a href="#">О нас</a>
+            <a href="work.html">Работа у нас</a>
+            <a href="menu.html">Меню</a>
+            <a href="reviews.html">Оставить отзыв</a>
+            <a href="index.html#block_2">Заведения</a>
+        </section>
+        <section class="contacts">
+            <p class="zagolovok">КОНТАКТЫ</p>
+            <article class="footer_txt">
+                <p>Большая Санкт-Петербургская , 39с18,<br>бизнес-центр “Волна”, Великий Новгород</p>
+                <p>office@donhotdog.ru</p>
+                <p>+7 (953) 908-35-77</p>
+            </article>
+        </section>
+        <section class="users">
+            <p class="zagolovok">ПОЛЬЗОВАТЕЛЮ</p>
+            <a href="policy.html">Политика конфедициальности</a>
+            <a href="#">FAQ</a>
+            <p class="predzak">Номер для предзаказа:<br>
+                +7 (929) 629-52-77<br>
+                +7 (911) 629-47-40</p>
+        </section>
+        <section class="last_txt">
+            <h5><span class="colortxt">DON ХОТ-ДОГ</span>— БЫСТРО,<br>УДОБНО, ВКУСНО</h5>
+            <img src="img/hot_dog.png" id="sticker">
+        </section>
+    </footer>
+    <script src="reviews.js"></script>
+</body>
+
+</html>

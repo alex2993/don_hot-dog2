@@ -1,0 +1,223 @@
+{% extends 'site/layout.html' %}
+{% block page_title %}Работа у нас — DON Хот-Дог{% endblock %}
+{% block extra_css %}
+  <style>
+    /* Стили только для контента страницы work */
+    .advantages {
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .txt {
+      width: 100%;
+      margin-left: 0;
+      text-align: center;
+    }
+    .cardz {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      align-items: flex-start;
+      gap: 52px;
+      margin-top: 50px;
+      margin-left: 0;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+    h2 {
+      color: #ffff;
+      font-family: var(--font-family);
+      font-size: 36px;
+      font-weight: 500;
+      margin-top: 50px;
+      margin-left: 0;
+      margin-bottom: 0;
+      padding: 0 2%;
+      text-align: center;
+    }
+    h1 {
+      color: var(--brand-primary);
+      font-size: 64px;
+      font-family: var(--font-family);
+      font-weight: 500;
+      margin-top: 0;
+      margin-left: 0;
+      margin-bottom: 0;
+      padding: 0 2%;
+      text-align: center;
+    }
+    h3 {
+      color: #ffff;
+      font-family: var(--font-family);
+      font-size: 24px;
+      font-weight: 300;
+      margin-top: 20px;
+      margin-left: 0;
+      margin-bottom: 0;
+      padding: 0 2%;
+      text-align: center;
+    }
+    .cards_img {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding-bottom: 0;
+    }
+    .cards_img>img {
+      width: 80px;
+      height: 80px;
+    }
+    .cards_img>p {
+      color: #ffff;
+      font-size: 24px;
+      margin-bottom: 0px;
+      margin-top: 5px;
+      font-family: var(--font-family);
+      text-align: center;
+    }
+    .application {
+      background-image: url(img/application_bg.png);
+      margin: 0;
+    }
+    .application input {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 558px;
+      height: 50px;
+      background-color: #000000;
+      border: 1px solid #000000;
+      outline: none;
+      border-radius: 10px;
+      margin-top: 30px;
+      margin-left: 681px;
+      color: #9B9B9B;
+      font-size: 24px;
+      font-family: var(--font-family);
+      padding-left: 18px;
+      transition: var(--transition);
+    }
+    .application input:hover {
+      border: 1px solid #ffff;
+    }
+    .application button {
+      background-color: var(--brand-primary);
+      width: 579px;
+      height: 50px;
+      border: none;
+      border-radius: 10px;
+      color: #000000;
+      font-size: 24px;
+      font-family: var(--font-family);
+      margin-left: 681px;
+      margin-top: 30px;
+      margin-bottom: 100px;
+      cursor: pointer;
+    }
+    .application h4 {
+      color: #ffff;
+      font-family: var(--font-family);
+      text-align: center;
+      font-size: 36px;
+      padding-top: 50px;
+      margin: 0;
+      margin-bottom: 4px;
+    }
+    
+    /* Адаптивность для страницы work */
+    @media (max-width: 1200px) {
+      .cardz {
+        margin-left: 0;
+      }
+      .application input,
+      .application button {
+        margin-left: 400px;
+        width: 400px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      h1 {
+        font-size: 48px !important;
+        padding: 0 5% !important;
+      }
+      h2 {
+        font-size: 28px !important;
+        padding: 0 5% !important;
+      }
+      h3 {
+        font-size: 18px !important;
+        padding: 0 5% !important;
+      }
+      .cardz {
+        margin: 20px auto;
+        margin-left: 0;
+        justify-content: center;
+      }
+      .cards_img {
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      .application input,
+      .application button {
+        width: 90%;
+        margin-left: 5%;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<section class="advantages">
+  <article class="txt">
+    <h2>Рецепт счастливой жизни</h2>
+    <h1>КАЖДЫЙ ДЕНЬ ДАРИТЬ ЛЮДЯМ РАДОСТЬ</h1>
+    <h3>Ежедневно в наших заведениях обедают тысячи гостей. Мы искренне рады каждому, и поэтому делаем свою работу с особой любовью и заботой.
+        <br>Если вы доброжелательны, любите узнавать новое и хотите получить бесценный профессиональный опыт – станьте частью нашего дружного коллектива!</h3>
+  </article>
+</section>
+<section class="cardz">
+  <article class="cards_img">
+    <img src="{{ url_for('static', filename='site_src/img/time.png') }}" alt="гибкий график">
+    <p>ГИБКИЙ ГРАФИК</p>
+  </article>
+  <article class="cards_img">
+    <img src="{{ url_for('static', filename='site_src/img/money_1.png') }}" alt="еженедельные выплаты">
+    <p>ЕЖЕНЕДЕЛЬНЫЕ<br>ВЫПЛАТЫ</p>
+  </article>
+  <article class="cards_img">
+    <img src="{{ url_for('static', filename='site_src/img/teacher.png') }}" alt="обучение">
+    <p>ОБУЧЕНИЕ</p>
+  </article>
+  <article class="cards_img">
+    <img src="{{ url_for('static', filename='site_src/img/rost.png') }}" alt="рост">
+    <p>ПРОФЕССИОНАЛЬНЫЙ<br>РОСТ</p>
+  </article>
+  <article class="cards_img">
+    <img src="{{ url_for('static', filename='site_src/img/money.png') }}" alt="рост ставки">
+    <p>ПОСТЕПЕННЫЙ<br>РОСТ СТАВКИ</p>
+  </article>
+</section>
+<section class="application">
+  <h4>Оставьте заявку и мы пригласим вас на собеседование</h4>
+  <form name="formWork" method="post" action="{{ url_for('site.work') }}">
+    <input name="name" required minlength="3" maxlength="64" type="text" placeholder="Ваше имя" value="{{ current_user.full_name if current_user.is_authenticated else '' }}">
+    <input name="professia" required minlength="3" maxlength="120" type="text" placeholder="Желаемая должность">
+    <input name="city" required minlength="2" maxlength="120" type="text" placeholder="Ваш город">
+    <input name="number" required minlength="5" maxlength="22" type="text" placeholder="Ваш номер телефона">
+    <input name="email" required minlength="5" maxlength="120" type="email" placeholder="Ваш e-mail" value="{{ current_user.email if current_user.is_authenticated else '' }}">
+    <button id="send" type="submit">Отправить</button>
+  </form>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  document.getElementById('tryba')?.addEventListener('click', () => alert('Контактный номер: +7 (911) 629-47-40'));
+  document.getElementById('tryba_2')?.addEventListener('click', () => alert('Контактный номер: +7 (911) 629-47-40'));
+</script>
+{% endblock %}
+

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-lg-6">
+    <div class="card bg-dark border-secondary">
+      <div class="card-body text-center py-5">
+        <h2 class="mb-3">Доступ через внешний портал</h2>
+        <p class="text-secondary mb-4">
+          Ваш профиль относится к категории «Пользователь внешнего портала». Работа в CRM вам недоступна.
+        </p>
+        <p class="text-secondary mb-4">
+          Чтобы продолжить работу, перейдите на интегрированный сайт или свяжитесь с администратором, если нужен доступ к CRM.
+        </p>
+        <div class="d-flex justify-content-center gap-3">
+          <a class="btn btn-outline-light" href="{{ portal_url }}" target="_blank" rel="noopener">Перейти на портал</a>
+          <a class="btn btn-accent" href="{{ url_for('auth.logout') }}">Выйти</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+

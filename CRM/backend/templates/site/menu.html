@@ -1,0 +1,449 @@
+{% extends 'site/layout.html' %}
+{% block page_title %}Меню — DON Хот-Дог{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='site_src/menu.css') }}">
+  <style>
+    body.modal-open {
+      overflow: hidden;
+    }
+    .product-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 2000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    .product-modal.product-modal--visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .product-modal__dialog {
+      background: #121212;
+      border: 1px solid rgba(226, 184, 2, 0.4);
+      border-radius: 24px;
+      max-width: 940px;
+      width: 100%;
+      padding: 36px;
+      color: #fff;
+      font-family: 'Roboto Slab';
+      position: relative;
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.6);
+      display: none;
+    }
+    .product-modal--ready .product-modal__dialog,
+    .product-modal--error .product-modal__dialog {
+      display: block;
+    }
+    .product-modal__close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(226, 184, 2, 0.6);
+      border-radius: 50%;
+      width: 44px;
+      height: 44px;
+      font-size: 24px;
+      color: #E2B802;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s ease, border-color 0.2s ease;
+    }
+    .product-modal__close:hover {
+      background: rgba(226, 184, 2, 0.2);
+      border-color: rgba(226, 184, 2, 0.9);
+    }
+    .product-modal__body {
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      gap: 32px;
+    }
+    .product-modal__image {
+      width: 100%;
+      border-radius: 20px;
+      background: #000;
+      object-fit: cover;
+      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.35);
+    }
+    .product-modal__title {
+      font-size: 34px;
+      font-weight: 700;
+      margin: 0 0 12px;
+      color: #E2B802;
+      text-transform: uppercase;
+    }
+    .product-modal__price {
+      font-size: 28px;
+      margin: 0 0 18px;
+    }
+    .product-modal__description {
+      font-size: 18px;
+      line-height: 1.5;
+      margin: 0 0 20px;
+      color: #f1f1f1;
+    }
+    .product-modal__section-title {
+      font-size: 18px;
+      margin: 0 0 10px;
+      color: #fff;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .product-modal__nutrients {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+    .product-modal__nutrient {
+      background: rgba(215, 71, 45, 0.1);
+      border: 1px solid rgba(215, 71, 45, 0.35);
+      border-radius: 12px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .product-modal__nutrient span:first-child {
+      font-size: 14px;
+      color: #E2B802;
+      text-transform: uppercase;
+    }
+    .product-modal__nutrient span:last-child {
+      font-size: 18px;
+      font-weight: 600;
+    }
+    .product-modal__form {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+    }
+    .product-modal__form button {
+      background: #D7472D;
+      color: #000;
+      border: none;
+      border-radius: 12px;
+      padding: 14px 28px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+    .product-modal__form button:hover {
+      transform: translateY(-1px);
+      background: #ff5c41;
+    }
+    .product-modal__meta {
+      font-size: 16px;
+      color: #bbb;
+      margin-bottom: 22px;
+    }
+    .product-modal__loading,
+    .product-modal__error {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 500;
+      text-align: center;
+      padding: 40px 0;
+      display: none;
+    }
+    .product-modal--loading .product-modal__loading,
+    .product-modal--error .product-modal__error {
+      display: block;
+    }
+    @media (max-width: 992px) {
+      .product-modal__dialog {
+        padding: 24px;
+      }
+      .product-modal__body {
+        grid-template-columns: 1fr;
+      }
+      .product-modal__image {
+        max-height: 320px;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  const links = document.querySelectorAll('.link');
+  const sections = document.querySelectorAll('.nm');
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id;
+        links.forEach(link => {
+          link.classList.toggle('link--active', link.getAttribute('href') === '#' + id);
+        });
+      }
+    });
+  }, { threshold: 0.5 });
+
+  sections.forEach(section => observer.observe(section));
+
+  links.forEach(link => {
+    link.addEventListener('click', () => {
+      links.forEach(l => l.classList.remove('link--active'));
+      link.classList.add('link--active');
+    });
+  });
+
+  (function () {
+    const modal = document.getElementById('productModal');
+    const modalDialog = modal.querySelector('.product-modal__dialog');
+    const modalLoading = document.getElementById('modalLoading');
+    const modalError = document.getElementById('modalError');
+    const modalImage = document.getElementById('modalProductImage');
+    const modalName = document.getElementById('modalProductName');
+    const modalPrice = document.getElementById('modalProductPrice');
+    const modalDescription = document.getElementById('modalProductDescription');
+    const modalMeta = document.getElementById('modalProductMeta');
+    const modalProtein = document.getElementById('modalProtein');
+    const modalFat = document.getElementById('modalFat');
+    const modalCarb = document.getElementById('modalCarb');
+    const modalKcal = document.getElementById('modalKcal');
+    const modalProductId = document.getElementById('modalProductId');
+    const fallbackImage = "{{ url_for('static', filename='site_src/img/1000.png') }}";
+    const cards = document.querySelectorAll('.menu-card[data-detail-url]');
+
+    const formatPrice = new Intl.NumberFormat('ru-RU', {
+      style: 'currency',
+      currency: 'RUB',
+      maximumFractionDigits: 0
+    });
+
+    function setBodyScroll(disable) {
+      if (disable) {
+        document.body.classList.add('modal-open');
+      } else {
+        document.body.classList.remove('modal-open');
+      }
+    }
+
+    function closeModal() {
+      modal.setAttribute('hidden', 'hidden');
+      modal.classList.remove('product-modal--visible', 'product-modal--loading', 'product-modal--ready', 'product-modal--error');
+      modalDialog.setAttribute('aria-hidden', 'true');
+      setBodyScroll(false);
+    }
+
+    function showModal() {
+      modal.removeAttribute('hidden');
+      modal.classList.remove('product-modal--ready', 'product-modal--error');
+      modal.classList.add('product-modal--visible', 'product-modal--loading');
+      modalDialog.setAttribute('aria-hidden', 'false');
+      modalLoading.textContent = 'Загружаем блюдо...';
+      modalError.style.display = 'none';
+      setBodyScroll(true);
+    }
+
+    function updateModalContent(data) {
+      modalName.textContent = data.name;
+      modalPrice.textContent = formatPrice.format(data.price || 0);
+      modalDescription.textContent = data.description || 'Описание появится позже.';
+
+      const metaParts = [];
+      if (data.category) {
+        metaParts.push(`Категория: ${data.category}`);
+      }
+      if (data.portion_grams) {
+        metaParts.push(`Порция: ${data.portion_grams} г`);
+      }
+      modalMeta.textContent = metaParts.join(' • ');
+
+      modalImage.src = data.image_url || fallbackImage;
+      modalImage.alt = data.name || 'Блюдо';
+
+      modalProtein.textContent = data.protein_100g != null ? `${Number(data.protein_100g).toFixed(1)} г` : '—';
+      modalFat.textContent = data.fat_100g != null ? `${Number(data.fat_100g).toFixed(1)} г` : '—';
+      modalCarb.textContent = data.carb_100g != null ? `${Number(data.carb_100g).toFixed(1)} г` : '—';
+      modalKcal.textContent = data.kcal_100g != null ? `${data.kcal_100g} ккал` : '—';
+
+      modalProductId.value = data.id;
+    }
+
+    cards.forEach((card) => {
+      card.addEventListener('click', (event) => {
+        if (event.target.closest('button')) {
+          return;
+        }
+        event.preventDefault();
+        showModal();
+        const url = card.getAttribute('data-detail-url');
+        fetch(url, { headers: { 'Accept': 'application/json' } })
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error('network');
+            }
+            return response.json();
+          })
+          .then((data) => {
+            modal.classList.remove('product-modal--loading');
+            modal.classList.add('product-modal--ready');
+            updateModalContent(data);
+          })
+          .catch(() => {
+            modal.classList.remove('product-modal--loading');
+            modal.classList.add('product-modal--error');
+            modalError.style.display = 'block';
+            modalLoading.textContent = '';
+          });
+      });
+    });
+
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal || event.target.hasAttribute('data-close-modal')) {
+        closeModal();
+      }
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && modal.classList.contains('product-modal--visible')) {
+        closeModal();
+      }
+    });
+  })();
+</script>
+{% endblock %}
+
+{% block content %}
+<h1>НАШЕ МЕНЮ</h1>
+<section class="nav_menu">
+  <ul>
+    {% for category in categories %}
+      <li><a href="#block_{{ loop.index }}" class="link{% if loop.first %} link--active{% endif %}" id="link_{{ loop.index }}">{{ category.name }}</a></li>
+    {% endfor %}
+    {% if products_by_category.get(None) %}
+      <li><a href="#block_free" class="link">Без категории</a></li>
+    {% endif %}
+  </ul>
+</section>
+
+{% for category in categories %}
+  {% set products = products_by_category.get(category.id, []) %}
+  <section class="nm" id="block_{{ loop.index }}">
+    <h2 id="h2">{{ category.name }}</h2>
+    <article id="cards">
+      {% if products %}
+        {% for product in products %}
+          <form class="card menu-card" id="product-{{ product.id }}" method="post" action="{{ url_for('site.basket_add') }}" data-detail-url="{{ url_for('site.product_details', product_id=product.id) }}">
+            {% if product.image_url %}
+              {% if product.image_url.startswith('http') %}
+                <img src="{{ product.image_url }}" class="card_img" alt="{{ product.name }}">
+              {% else %}
+                <img src="{{ url_for('static', filename=product.image_url) }}" class="card_img" alt="{{ product.name }}">
+              {% endif %}
+            {% else %}
+              <img src="{{ url_for('static', filename='site_src/img/1000.png') }}" class="card_img" alt="{{ product.name }}">
+            {% endif %}
+            <p id="price" class="card_prise">{{ "{:,.0f}".format(product.price) }}₽</p>
+            <p id="name" class="card_title">{{ product.name }}</p>
+            <p id="ves">
+              {% if product.portion_grams %}
+                {{ product.portion_grams }} г
+              {% else %}
+                Порция
+              {% endif %}
+            </p>
+            <input type="hidden" name="product_id" value="{{ product.id }}">
+            <input type="hidden" name="qty" value="1">
+            <button class="btn" type="submit">
+              <p class="txt_btn">В корзину</p>
+            </button>
+          </form>
+        {% endfor %}
+      {% else %}
+        <div class="alert alert-secondary">В этой категории пока нет блюд.</div>
+      {% endif %}
+    </article>
+  </section>
+{% endfor %}
+
+{% set uncategorised = products_by_category.get(None, []) %}
+{% if uncategorised %}
+  <section class="nm" id="block_free">
+    <h2 id="h2">Без категории</h2>
+    <article id="cards">
+      {% for product in uncategorised %}
+        <form class="card menu-card" id="product-{{ product.id }}" method="post" action="{{ url_for('site.basket_add') }}" data-detail-url="{{ url_for('site.product_details', product_id=product.id) }}">
+          {% if product.image_url %}
+            {% if product.image_url.startswith('http') %}
+              <img src="{{ product.image_url }}" class="card_img" alt="{{ product.name }}">
+            {% else %}
+              <img src="{{ url_for('static', filename=product.image_url) }}" class="card_img" alt="{{ product.name }}">
+            {% endif %}
+          {% else %}
+            <img src="{{ url_for('static', filename='site_src/img/1000.png') }}" class="card_img" alt="{{ product.name }}">
+          {% endif %}
+          <p id="price" class="card_prise">{{ "{:,.0f}".format(product.price) }}₽</p>
+          <p id="name" class="card_title">{{ product.name }}</p>
+          <p id="ves">
+            {% if product.portion_grams %}
+              {{ product.portion_grams }} г
+            {% else %}
+              Порция
+            {% endif %}
+          </p>
+          <input type="hidden" name="product_id" value="{{ product.id }}">
+          <input type="hidden" name="qty" value="1">
+          <button class="btn" type="submit">
+            <p class="txt_btn">В корзину</p>
+          </button>
+        </form>
+      {% endfor %}
+    </article>
+  </section>
+{% endif %}
+
+<section class="product-modal" id="productModal" hidden>
+  <div class="product-modal__loading" id="modalLoading">Загружаем блюдо...</div>
+  <div class="product-modal__error" id="modalError">Не удалось загрузить данные. Попробуйте позже.</div>
+  <article class="product-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="modalProductName">
+    <button class="product-modal__close" type="button" data-close-modal aria-label="Закрыть">&times;</button>
+    <div class="product-modal__body">
+      <img id="modalProductImage" class="product-modal__image" src="{{ url_for('static', filename='site_src/img/1000.png') }}" alt="Изображение блюда">
+      <div>
+        <h3 class="product-modal__title" id="modalProductName">Название блюда</h3>
+        <p class="product-modal__price" id="modalProductPrice">0 ₽</p>
+        <p class="product-modal__description" id="modalProductDescription">Описание появится позже.</p>
+        <div class="product-modal__meta" id="modalProductMeta"></div>
+        <h4 class="product-modal__section-title">Пищевая ценность на 100 г:</h4>
+        <div class="product-modal__nutrients">
+          <div class="product-modal__nutrient">
+            <span>Белки</span>
+            <span id="modalProtein">—</span>
+          </div>
+          <div class="product-modal__nutrient">
+            <span>Жиры</span>
+            <span id="modalFat">—</span>
+          </div>
+          <div class="product-modal__nutrient">
+            <span>Углеводы</span>
+            <span id="modalCarb">—</span>
+          </div>
+          <div class="product-modal__nutrient">
+            <span>Ккал</span>
+            <span id="modalKcal">—</span>
+          </div>
+        </div>
+        <form method="post" action="{{ url_for('site.basket_add') }}" class="product-modal__form">
+          <input type="hidden" name="product_id" id="modalProductId">
+          <input type="hidden" name="qty" value="1">
+          <button type="submit">Добавить в корзину</button>
+        </form>
+      </div>
+    </div>
+  </article>
+</section>
+{% endblock %}
+

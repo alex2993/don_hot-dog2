@@ -1,0 +1,85 @@
+body {
+  font-family: "Roboto Slab", "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: #f6f7fb;
+  color: #1f2933;
+}
+
+a {
+  color: #d7472d;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #b8381e;
+  text-decoration: none;
+}
+
+.btn-accent {
+  background: #d7472d;
+  border-color: #d7472d;
+  color: #fff;
+}
+
+.btn-accent:hover,
+.btn-accent:focus {
+  background: #b8381e;
+  border-color: #b8381e;
+  color: #fff;
+}
+
+.site-header {
+  background: linear-gradient(135deg, #1f2933 0%, #111827 100%);
+  color: #fff;
+}
+
+.site-header .navbar-brand span {
+  font-size: 1.25rem;
+}
+
+.site-header .nav-link {
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.site-header .nav-link:hover,
+.site-header .nav-link.active {
+  color: #fff;
+}
+
+.site-main {
+  min-height: 60vh;
+}
+
+.site-footer {
+  background: #111827;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.site-footer a {
+  color: #fbbf24;
+}
+
+.hero {
+  background: radial-gradient(circle at top right, rgba(215, 71, 45, 0.2), transparent 60%);
+}
+
+.hero-image {
+  background: linear-gradient(135deg, rgba(215, 71, 45, 0.7), rgba(17, 24, 39, 0.85)), url('../image/head.png') center/contain no-repeat;
+}
+
+.placeholder-image {
+  background: #f1f5f9;
+  height: 200px;
+}
+
+.policy-text p {
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+@media (max-width: 767.98px) {
+  .hero {
+    text-align: center;
+  }
+}
+

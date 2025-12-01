@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-12">
+    <div class="card bg-dark border-secondary">
+      <div class="card-body">
+        <h5 class="card-title mb-1">Центральная панель</h5>
+        <p class="mb-0 text-secondary">Добро пожаловать в POS-CRM Don Hot Dog. Следите за ключевыми показателями бизнеса и оперативно переходите к задачам.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-2 row-cols-xl-4 g-3 mt-1">
+  <div class="col">
+    <div class="card bg-dark border-secondary h-100">
+      <div class="card-body">
+        <p class="text-secondary text-uppercase small mb-2">Заказы сегодня</p>
+        <h3 class="fw-semibold mb-2">{{ orders_today }}</h3>
+        {% if orders_change is not none %}
+          {% if orders_change > 0 %}
+            {% set change_class = 'text-success' %}
+            {% set sign = '+' %}
+          {% elif orders_change < 0 %}
+            {% set change_class = 'text-danger' %}
+            {% set sign = '' %}
+          {% else %}
+            {% set change_class = 'text-secondary' %}
+            {% set sign = '' %}
+          {% endif %}
+          <span class="{{ change_class }}">{{ sign }}{{ orders_change }}%</span>
+          <span class="text-secondary ms-2">к вчерашнему дню</span>
+        {% else %}
+          <span class="text-secondary">недостаточно данных для сравнения</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card bg-dark border-secondary h-100">
+      <div class="card-body">
+        <p class="text-secondary text-uppercase small mb-2">Выручка сегодня</p>
+        <h3 class="fw-semibold mb-2">{{ "{:,.2f}".format(revenue_today) }} ₽</h3>
+        {% if revenue_change is not none %}
+          {% if revenue_change > 0 %}
+            {% set change_class = 'text-success' %}
+            {% set sign = '+' %}
+          {% elif revenue_change < 0 %}
+            {% set change_class = 'text-danger' %}
+            {% set sign = '' %}
+          {% else %}
+            {% set change_class = 'text-secondary' %}
+            {% set sign = '' %}
+          {% endif %}
+          <span class="{{ change_class }}">{{ sign }}{{ revenue_change }}%</span>
+          <span class="text-secondary ms-2">к вчерашнему дню</span>
+        {% else %}
+          <span class="text-secondary">недостаточно данных для сравнения</span>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card bg-dark border-secondary h-100">
+      <div class="card-body">
+        <p class="text-secondary text-uppercase small mb-2">Активные столы</p>
+        <h3 class="fw-semibold mb-2">{{ open_orders }}</h3>
+        <span class="text-secondary">заказы со статусом «open»</span>
+      </div>
+    </div>
+  </div>
+  <div class="col">
+    <div class="card bg-dark border-secondary h-100">
+      <div class="card-body">
+        <p class="text-secondary text-uppercase small mb-2">Доставки в работе</p>
+        <h3 class="fw-semibold mb-2">{{ pending_delivery }}</h3>
+        <span class="text-secondary">не завершено или не отменено</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-3 mt-1">
+  <div class="col-xl-6">
+    <div class="card bg-dark border-secondary h-100">
+      <div class="card-header border-secondary">
+        <div class="d-flex justify-content-between align-items-center">
+          <span>Последние заказы в зале</span>
+          <a href="{{ url_for('orders.index') }}" class="btn btn-sm btn-outline-light">Все заказы</a>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        {% if latest_orders %}
+          <div class="table-responsive">
+            <table class="table table-dark table-hover table-sm mb-0 align-middle">
+              <thead>
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">Стол</th>
+                  <th scope="col">Сумма</th>
+                  <th scope="col">Статус</th>
+                  <th scope="col">Создан</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in latest_orders %}
+                  <tr>
+                    <td>#{{ order.id }}</td>
+                    <td>{{ order.table.name if order.table else '—' }}</td>
+                    <td>{{ "{:,.2f}".format(order.total or 0) }} ₽</td>
+                    <td>{{ order.status|capitalize }}</td>
+                    <td>{{ order.created_at.strftime('%d.%m %H:%M') if order.created_at else '' }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="p-3 text-secondary">Пока нет новых заказов.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6">
+    <div class="card bg-dark border-secondary h-100">
+      <div class="card-header border-secondary">
+        <div class="d-flex justify-content-between align-items-center">
+          <span>Последние доставки</span>
+          <a href="{{ url_for('delivery.home') }}" class="btn btn-sm btn-outline-light">Все доставки</a>
+        </div>
+      </div>
+      <div class="card-body p-0">
+        {% if latest_deliveries %}
+          <div class="table-responsive">
+            <table class="table table-dark table-hover table-sm mb-0 align-middle">
+              <thead>
+                <tr>
+                  <th scope="col">№</th>
+                  <th scope="col">Клиент</th>
+                  <th scope="col">Адрес</th>
+                  <th scope="col">Статус</th>
+                  <th scope="col">Создан</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for delivery in latest_deliveries %}
+                  <tr>
+                    <td>#{{ delivery.id }}</td>
+                    <td>{{ delivery.customer_name or delivery.phone or '—' }}</td>
+                    <td>
+                      {% if delivery.street %}
+                        {{ delivery.street }} {{ delivery.house or '' }}{% if delivery.flat %}, кв. {{ delivery.flat }}{% endif %}
+                      {% else %}
+                        —
+                      {% endif %}
+                    </td>
+                    <td>{{ delivery.status|replace('_', ' ')|capitalize }}</td>
+                    <td>{{ delivery.created_at.strftime('%d.%m %H:%M') if delivery.created_at else '' }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="p-3 text-secondary">Пока нет новых доставок.</div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

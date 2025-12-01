@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5>Номенклатура</h5>
+      <form class="d-flex gap-2" method="post" action="{{ url_for('inventory.create_item') }}">
+        <input class="form-control" name="name" placeholder="Название">
+        <input class="form-control" name="unit" placeholder="Ед." value="pcs">
+        <button class="btn btn-accent">Добавить</button>
+      </form>
+    </div>
+    <div class="card bg-dark border-secondary">
+      <div class="table-responsive">
+        <table class="table table-dark table-striped"><thead><tr><th>ID</th><th>Название</th><th>Ед.</th><th>Кол-во</th></tr></thead>
+          <tbody>
+            {% for i in items %}<tr><td>{{i.id}}</td><td>{{i.name}}</td><td>{{i.unit}}</td><td>{{i.quantity}}</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="d-flex justify-content-between align-items-center mb-2">
+      <h5>Движения</h5>
+      <form class="d-flex gap-2 flex-wrap" method="post" action="{{ url_for('inventory.manual_move') }}">
+        <select class="form-select" name="item_id">
+          {% for i in items %}<option value="{{i.id}}">{{i.name}}</option>{% endfor %}
+        </select>
+        <select class="form-select" name="warehouse_id">
+          {% for w in warehouses %}<option value="{{w.id}}">{{w.name}}</option>{% endfor %}
+        </select>
+        <input class="form-control" name="delta" type="number" step="0.001" placeholder="Δ">
+        <input class="form-control" name="reason" placeholder="Причина">
+        <button class="btn btn-accent">Провести</button>
+      </form>
+    </div>
+    <div class="card bg-dark border-secondary">
+      <div class="table-responsive">
+        <table class="table table-dark table-striped"><thead><tr><th>ID</th><th>Номенклатура</th><th>Δ</th><th>Причина</th></tr></thead>
+          <tbody>
+            {% for m in moves %}<tr><td>{{m.id}}</td><td>{{m.item_id}}</td><td>{{m.delta}}</td><td>{{m.reason}}</td></tr>{% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+ </div>
+{% endblock %}
+
+

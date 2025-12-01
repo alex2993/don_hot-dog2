@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DON Хот-Дог</title>
+    <link rel="shortcut icon" href="img/head.png" type="image/png">
+    <link rel="stylesheet" href="profil.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <article class="logotip">
+            <a href="index.html"><img src="img/logo.svg" id="logo"></a>
+        </article>
+        <article class="city">
+            <img src="img/planet.svg" id="planet">
+            <select id="city">
+                <option>Великий Новгород</option>
+                <option>Москва</option>
+                <option>Санкт-Петербург</option>
+            </select>
+        </article>
+        <nav>
+            <a href="#" id="first">О Don Хот-Дог</a>
+            <a href="#block_2">Заведения</a>
+            <a href="work.html">Работа</a>
+            <a href="reviews.html">Оставить отзыв</a>
+            <a href="menu.html">Меню</a>
+            <a href="#" id="last">Контакты</a>
+        </nav>
+        <article class="img">
+            <a href="https://yandex.ru/maps/-/CDF9IXyX"><img src="img/Yandex.svg" width="35"></a>
+            <a href="#"><img src="img/tryba.svg" id="tryba" width="35"></a>
+            <a href="https://vk.com/donhotdog53"><img src="img/Vk.svg" width="35"></a>
+        </article>
+        <a href="basket.html"><img src="img/korzina.svg" id="korzina"></a>
+        <a href="profil.html"><img src="img/profil.svg" id="profil"></a>
+    </header>
+    <section class="glav">
+        <section class="profil">
+            <img src="img/ava.png">
+            <article class="txt">
+                <h1 id="username"> Reg</h1>
+                <p id="phoneNumber"> Phone num</p>
+                <button id="exitAcc">Exit</button>
+            </article>
+        </section>
+        <section class="bonuses">
+            <ul>
+                <h2>Бонусы: 123</h2>
+                <li>History:</li>
+                <li>+100 бонусов</li>
+                <li>+23 бонуса</li>
+            </ul>
+            <button>Потратить бонусы</button>
+        </section>
+
+        
+    </section>
+    
+    <section id="adminPanel">
+        <article class="adm">
+            <input type="number" id="deleteElementID_input" placeholder="id">
+            <button id="delUsersButton">Удалить пользователей</button>
+            <button id="delWorkSends">Удалить запросы на работу</button>
+            <button id="getAllPosts">Получит все отзывы</button>
+            <button id="getAllUsers">Получить пользователей</button>
+            <button id="getAllWorkSends">Получить запросы на работу</button>
+        </article>
+    </section>
+    
+<section class="zakazi">
+<h3>История заказов</h3>
+<section class="orders">
+<article class="order">
+    <p>Order №: 12345</p>
+    <p>Date: 12.10.2024</p>
+    <p id="ac">Your order</p>
+    <p>---------------------------</p>
+    <p>Комбо №1</p>
+    <button id="btn">See more</button>
+</article>
+<article class="order">
+    <p>Order №: 12345</p>
+    <p>Date: 12.10.2024</p>
+    <p id="ac">Your order</p>
+    <p>---------------------------</p>
+    <p>Комбо №1</p>
+    <button id="btn">See more</button>
+</article>
+<article class="order">
+    <p>Order №: 12345</p>
+    <p>Date: 12.10.2024</p>
+    <p id="ac">Your order</p>
+    <p>---------------------------</p>
+    <p>Комбо №1</p>
+    <button id="btn">See more</button>
+</article>
+<article class="order">
+    <p>Order №: 12345</p>
+    <p>Date: 12.10.2024</p>
+    <p id="ac">Your order</p>
+    <p>---------------------------</p>
+    <p>Комбо №1</p>
+    <button id="btn">See more</button>
+</article>
+<article class="order">
+    <p>Order №: 12345</p>
+    <p>Date: 12.10.2024</p>
+    <p id="ac">Your order</p>
+    <p>---------------------------</p>
+    <p>Комбо №1</p>
+    <button id="btn">See more</button>
+</article>
+<article class="order">
+    <p>Order №: 12345</p>
+    <p>Date: 12.10.2024</p>
+    <p id="ac">Your order</p>
+    <p>---------------------------</p>
+    <p>Комбо №1</p>
+    <button id="btn">See more</button>
+</article>
+
+</section>
+</section>
+<section id="reg">
+    <p>Регистрация</p>
+    <form name="regForm">
+        <input required name="name" type="text" placeholder="name">
+        <input required name="phone" type="number" placeholder="numberPh">
+        <input required name="adres" type="text" placeholder="adres">
+        <button id="buttonReg">Зарегистрироваться</button>
+    </form>
+</section>
+
+<section id="auth">
+    <p>Авторизация</p>
+    <form name="authForm">
+        <input required name="name" type="text" placeholder="name">
+        <input required name="phone" type="number" placeholder="numberPh">
+        <button id="buttonAuth">Войти</button>
+    </form>
+</section>
+
+<section id="adminPanel">
+    <article>
+        <input type="number" id="deleteElementID_input" placeholder="id">
+        <button id="delUsersButton">Delete users</button>
+        <button id="delWorkSends">Delete work sends</button>
+        <button id="getAllPosts">Get all otziv</button>
+        <button id="getAllUsers">Get all users</button>
+        <button id="getAllWorkSends">Get all WorkSends</button>
+    </article>
+</section>
+    <footer>
+        <section class="nav">
+            <a href="index.html"><img src="img/logo.svg" id="logo_footer"></a>
+            <a href="#"><img src="img/tryba.svg" id="tryba_2"></a>
+            <a href="https://vk.com/donhotdog53"><img src="img/Vk.svg"></a>
+            <a href="https://yandex.ru/maps/-/CDF9IXyX"><img src="img/Yandex.svg"></a>
+        </section>
+        <section class="main">
+            <p class="zagolovok">DON ХОТ-ДОГ</p>
+            <a href="#">О нас</a>
+            <a href="work.html">Работа у нас</a>
+            <a href="menu.html">Меню</a>
+            <a href="reviews.html">Оставить отзыв</a>
+            <a href="#">Заведения</a>
+        </section>
+        <section class="contacts">
+            <p class="zagolovok">КОНТАКТЫ</p>
+            <article class="footer_txt">
+                <p>Большая Санкт-Петербургская , 39с18,<br>бизнес-центр “Волна”, Великий Новгород</p>
+                <p>office@donhotdog.ru</p>
+                <p>+7 (953) 908-35-77</p>
+            </article>
+        </section>
+        <section class="users">
+            <p class="zagolovok">ПОЛЬЗОВАТЕЛЮ</p>
+            <a href="policy.html">Политика конфедициальности</a>
+            <a href="#">FAQ</a>
+            <p class="predzak">Номер для предзаказа:<br>
+                +7 (929) 629-52-77<br>
+                +7 (911) 629-47-40</p>
+        </section>
+        <section class="last_txt">
+            <h5><span class="colortxt">DON ХОТ-ДОГ</span>— БЫСТРО,<br>УДОБНО, ВКУСНО</h5>
+            <img src="img/hot_dog.png" id="sticker">
+        </section>
+    </footer>
+    <script src="index.js"></script>
+    <script src="profil.js"></script>
+</body>
+
+</html>

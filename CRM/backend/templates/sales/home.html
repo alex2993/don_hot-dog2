@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Продажи (POS)</h4>
+  <form class="d-flex gap-2" method="post" action="{{ url_for('sales.order_new') }}">
+    <select class="form-select" name="waiter">
+      <option value="">— Официант/Бармен —</option>
+      {% for e in staff %}<option value="{{e.full_name}}">{{e.full_name}} — {{e.position}}</option>{% endfor %}
+    </select>
+    <input class="form-control" name="guest_count" type="number" value="1" min="1" style="max-width:120px">
+    <button class="btn btn-accent">Новый заказ</button>
+  </form>
+ </div>
+
+<div class="card bg-dark border-secondary">
+  <div class="card-body">
+    <h6>Открытые заказы</h6>
+    <div class="table-responsive">
+      <table class="table table-dark table-striped align-middle">
+        <thead><tr><th>ID</th><th>Официант</th><th>Гостей</th><th>Сумма</th><th></th></tr></thead>
+        <tbody>
+          {% for o in open_orders %}
+          <tr>
+            <td>{{o.id}}</td><td>{{o.waiter or '-'}}</td><td>{{o.guest_count}}</td><td>{{o.total}}</td>
+            <td><a class="btn btn-sm btn-outline-light" href="{{ url_for('sales.order_view', order_id=o.id) }}">Открыть</a></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+ </div>
+{% endblock %}
+
+

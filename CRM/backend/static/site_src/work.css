@@ -1,0 +1,273 @@
+html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+}
+
+body {
+    margin: 0;
+    /* background-color: #121212; */
+}
+
+/* Стили шапки теперь в layout.html и index.css */
+/* Стили для элементов шапки (#korzina, #profil, #logo, #planet, #city, #first) также в index.css */
+
+/* Стили для элементов шапки удалены - они должны браться из layout.html и index.css */
+
+.advantages {
+    display: inline-block;
+}
+
+.txt {
+    float: left;
+}
+
+h2 {
+    color: #ffff;
+    font-family: 'Roboto Slab';
+    font-size: 36px;
+    font-weight: 500;
+    margin-top: 50px;
+    margin-left: 260px;
+    margin-bottom: 0;
+}
+
+h1 {
+    color: #D7472D;
+    font-size: 64px;
+    font-family: 'Roboto Slab';
+    font-weight: 500;
+    margin-top: 0;
+    margin-left: 260px;
+    margin-bottom: 0;
+}
+
+h3 {
+    color: #ffff;
+    font-family: 'Roboto Slab';
+    font-size: 24px;
+    font-weight: 300;
+    margin-top: 20px;
+    margin-left: 260px;
+    margin-bottom: 0;
+}
+
+.cards_img {
+    display: flex;
+    gap: 52px;
+    padding-bottom: 58px;
+
+}
+
+.cardz {
+    float: right;
+    margin-top: 50px;
+    margin-left: 302px;
+}
+
+.cards_img>img {
+    width: 80px;
+    height: 80px;
+}
+
+
+.cards_img>p {
+    color: #ffff;
+    font-size: 24px;
+    margin-bottom: 0px;
+    margin-top: 5px;
+    font-family: 'Roboto Slab';
+}
+
+.application {
+    background-image: url(img/application_bg.png);
+    margin: 0;
+}
+
+input {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 558px;
+    height: 50px;
+    background-color: #000000;
+    border: 1px solid #000000;
+    outline: none;
+    border-radius: 10px;
+    margin-top: 30px;
+    margin-left: 681px;
+    color: #9B9B9B;
+    font-size: 24px;
+    font-family: 'Roboto Slab';
+    padding-left: 18px;
+    transition: .2s;
+}
+
+input:hover {
+    border: 1px solid #ffff;
+}
+
+button {
+    background-color: #D7472D;
+    width: 579px;
+    height: 50px;
+    border: none;
+    border-radius: 10px;
+    color: #000000;
+    font-size: 24px;
+    font-family: 'Roboto Slab';
+    margin-left: 681px;
+    margin-top: 30px;
+    margin-bottom: 100px;
+    cursor: pointer;
+}
+
+/* Стили для ссылок применяются только к контенту страницы, не к шапке */
+.advantages a,
+.application a,
+footer a {
+    text-decoration: none;
+    color: #000000;
+    font-weight: 500;
+    transition: .2s;
+}
+
+.advantages a:hover,
+.application a:hover,
+footer a:hover {
+    color: #E2B802;
+}
+
+h4 {
+    color: #ffff;
+    font-family: 'Roboto Slab';
+    text-align: center;
+    font-size: 36px;
+    padding-top: 50px;
+    margin: 0;
+    margin-bottom: 4px;
+}
+
+footer {
+    background-color: #D7472D;
+    height: 180px;
+    display: flex;
+    justify-content: space-evenly;
+    padding-top: 20px;
+
+}
+
+#logo_footer {
+    width: 104px;
+    height: 115px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Стили для футера - не влияют на шапку */
+footer .nav {
+    margin-left: 213px;
+    margin-top: 0;
+}
+
+footer .nav>a>img {
+    width: 31px;
+    height: 31px;
+}
+
+.main {
+    display: flex;
+    flex-direction: column;
+
+
+}
+
+.zagolovok {
+    font-size: 24px;
+    color: #000000;
+    font-family: 'Roboto Slab';
+    font-weight: 700;
+    margin: 0px;
+}
+
+.main>a {
+    text-decoration: none;
+    font-size: 16px;
+    width: 150px;
+    font-family: 'Roboto Slab';
+    color: #000000;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.main>a:hover {
+    color: #E2B802;
+}
+
+.contacts {
+    display: flex;
+    flex-direction: column;
+
+
+}
+
+.footer_txt>p {
+    margin: 0px;
+    font-size: 16px;
+    font-family: 'Roboto Slab';
+    color: #000000;
+    font-weight: 600;
+}
+
+.users {
+    display: flex;
+    flex-direction: column;
+
+
+}
+
+.users>a {
+    text-decoration: none;
+    font-size: 16px;
+    width: 300px;
+    font-family: 'Roboto Slab';
+    color: #000000;
+    font-weight: 600;
+    transition: .2s;
+}
+
+.users>a:hover {
+    color: #E2B802;
+}
+
+.predzak {
+    font-size: 16px;
+    font-family: 'Roboto Slab';
+    color: #000000;
+    font-weight: 500;
+    margin: 0px;
+}
+
+h5 {
+    font-size: 32px;
+    color: #000000;
+    font-family: 'Roboto Slab';
+    font-weight: 600;
+    margin: 0;
+
+}
+
+.colortxt {
+    color: #E2B802;
+}
+
+.last_txt {
+    display: flex;
+    position: relative;
+}
+
+.last_txt img {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}

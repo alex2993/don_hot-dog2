@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <script>
+      (function () {
+        const storedTheme = localStorage.getItem('theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const theme = storedTheme || (prefersDark ? 'dark' : 'light');
+        document.documentElement.setAttribute('data-bs-theme', theme);
+      })();
+    </script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Don Hot Dog CRM</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='image/favicon.png') }}">
+    <style>
+      :root {
+        --brand-accent: #d7472d;
+        --brand-accent-rgb: 215, 71, 45;
+        --transition-speed: 0.2s;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      html[data-bs-theme='light'] {
+        --bs-body-bg: #f6f7fb;
+        --bs-body-color: #212529;
+        --surface-default: #ffffff;
+        --surface-elevated: #ffffff;
+        --surface-muted: #f0f2f8;
+        --text-secondary: #6c757d;
+        --border-color: rgba(17, 24, 39, 0.1);
+        --navbar-bg: rgba(255, 255, 255, 0.85);
+        --navbar-border: rgba(17, 24, 39, 0.08);
+        --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.08);
+      }
+
+      html[data-bs-theme='dark'] {
+        --bs-body-bg: #050505;
+        --bs-body-color: #f1f5f9;
+        --surface-default: #0b0b0b;
+        --surface-elevated: #111418;
+        --surface-muted: #141820;
+        --text-secondary: #94a3b8;
+        --border-color: rgba(148, 163, 184, 0.2);
+        --navbar-bg: rgba(11, 11, 11, 0.9);
+        --navbar-border: rgba(148, 163, 184, 0.12);
+        --shadow-soft: 0 8px 24px rgba(15, 23, 42, 0.4);
+      }
+
+      body {
+        background-color: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        transition: background-color var(--transition-speed), color var(--transition-speed);
+        font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+      }
+
+      .navbar {
+        background: var(--navbar-bg);
+        backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--navbar-border);
+        position: sticky;
+        top: 0;
+        z-index: 1030;
+        transition: background var(--transition-speed), border-color var(--transition-speed);
+      }
+
+      .navbar-brand span {
+        color: var(--brand-accent);
+      }
+
+      .navbar-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        color: var(--bs-body-color);
+      }
+
+      .navbar-brand img {
+        height: 40px;
+        width: auto;
+      }
+
+      .nav-link {
+        color: var(--bs-body-color);
+        opacity: 0.75;
+        transition: opacity var(--transition-speed), color var(--transition-speed);
+      }
+
+      .nav-link:hover,
+      .nav-link:focus {
+        opacity: 1;
+        color: var(--bs-body-color);
+      }
+
+      .card {
+        background-color: var(--surface-elevated);
+        border: 1px solid var(--border-color);
+        box-shadow: var(--shadow-soft);
+        transition: transform var(--transition-speed), box-shadow var(--transition-speed);
+      }
+
+      .card.bg-dark,
+      .bg-dark {
+        background-color: var(--surface-elevated) !important;
+        color: var(--bs-body-color) !important;
+        border-color: var(--border-color) !important;
+      }
+
+      .border-secondary {
+        border-color: var(--border-color) !important;
+      }
+
+      .text-secondary {
+        color: var(--text-secondary) !important;
+      }
+
+      .btn {
+        transition: background-color var(--transition-speed), border-color var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
+      }
+
+      .btn:hover {
+        transform: translateY(-1px);
+      }
+
+      .btn-accent {
+        background: var(--brand-accent);
+        border-color: var(--brand-accent);
+        color: #fff;
+      }
+
+      .btn-accent:hover,
+      .btn-accent:focus {
+        background: rgba(var(--brand-accent-rgb), 0.85);
+        border-color: rgba(var(--brand-accent-rgb), 0.85);
+        color: #fff;
+      }
+
+      .btn-outline-light {
+        color: var(--brand-accent);
+        border-color: rgba(var(--brand-accent-rgb), 0.35);
+        background-color: transparent;
+      }
+
+      .btn-outline-light:hover,
+      .btn-outline-light:focus {
+        color: #fff;
+        background-color: var(--brand-accent);
+        border-color: var(--brand-accent);
+      }
+
+      a {
+        color: rgba(var(--brand-accent-rgb), 0.9);
+        transition: color var(--transition-speed);
+      }
+
+      a:hover {
+        color: var(--brand-accent);
+      }
+
+      .theme-toggle {
+        border: none;
+        background: rgba(var(--brand-accent-rgb), 0.08);
+        color: var(--brand-accent);
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background var(--transition-speed), color var(--transition-speed), transform var(--transition-speed);
+      }
+
+      .theme-toggle:hover,
+      .theme-toggle:focus {
+        background: rgba(var(--brand-accent-rgb), 0.2);
+        color: var(--brand-accent);
+        transform: translateY(-1px);
+      }
+
+      table {
+        color: var(--bs-body-color);
+      }
+
+      .table-dark {
+        --bs-table-color: var(--bs-body-color);
+        --bs-table-bg: var(--surface-default);
+        --bs-table-striped-bg: rgba(15, 23, 42, 0.04);
+        --bs-table-striped-color: var(--bs-body-color);
+        --bs-table-hover-bg: rgba(15, 23, 42, 0.08);
+        --bs-table-hover-color: var(--bs-body-color);
+        color: var(--bs-body-color);
+        border-color: var(--border-color);
+      }
+
+      .alert {
+        border-radius: 12px;
+        border: 1px solid var(--border-color);
+        background-color: var(--surface-default);
+        color: var(--bs-body-color);
+        box-shadow: var(--shadow-soft);
+      }
+
+      @media (max-width: 991.98px) {
+        .navbar {
+          position: static;
+          backdrop-filter: none;
+        }
+
+        .navbar .d-flex.gap-3 {
+          flex-wrap: wrap;
+          margin-top: 1rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    {% if request.endpoint not in ['auth.login', 'auth.register'] %}
+      <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+          <a class="navbar-brand fw-bold" href="{{ url_for('dashboard.index') }}">
+            <img src="{{ url_for('static', filename='image/head.png') }}" alt="Don Hot Dog логотип">
+            <span>Don</span> Hot Dog CRM
+          </a>
+          {% set current_role = None %}
+          {% if current_user.is_authenticated %}
+            {% if current_user.role %}
+              {% set current_role = (current_user.role.name or '').lower() %}
+            {% else %}
+              {% set current_role = (current_user.role_name or '').lower() %}
+            {% endif %}
+          {% endif %}
+          <div class="d-flex align-items-center gap-3">
+            {% if current_role != 'user' %}
+              <a class="nav-link" href="{{ url_for('dashboard.index') }}">Dashboard</a>
+              <a class="nav-link" href="{{ url_for('catalog.list_products') }}">Каталог</a>
+              <a class="nav-link" href="{{ url_for('orders.index') }}">Заказы</a>
+              <a class="nav-link" href="{{ url_for('sales.home') }}">Продажи</a>
+              <a class="nav-link" href="{{ url_for('delivery.home') }}">Доставка</a>
+              <a class="nav-link" href="{{ url_for('crm.index') }}">CRM</a>
+              <a class="nav-link" href="{{ url_for('employees.index') }}">Сотрудники</a>
+              <a class="nav-link" href="{{ url_for('inventory.index') }}">Склад</a>
+            {% if current_role == 'admin' %}
+              <a class="nav-link" href="{{ url_for('applications.index') }}">Заявки</a>
+              <a class="nav-link" href="{{ url_for('users.index') }}">Пользователи</a>
+            {% endif %}
+            {% endif %}
+            <button class="theme-toggle" type="button" id="themeToggle" aria-label="Переключить тему">
+              <span id="themeIcon" aria-hidden="true">☀️</span>
+            </button>
+            {% if current_user.is_authenticated %}
+              <span class="navbar-text text-secondary small">
+                {{ current_user.full_name or current_user.email }}
+              </span>
+              <a class="nav-link" href="/auth/logout">Выйти</a>
+            {% else %}
+              <a class="nav-link" href="/auth/login">Войти</a>
+            {% endif %}
+          </div>
+        </div>
+      </nav>
+    {% endif %}
+    <main class="container py-4">
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="mb-3">
+            {% for category, message in messages %}
+              <div class="alert alert-{{category}}">{{message}}</div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      {% block content %}{% endblock %}
+    </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      (function () {
+        const toggle = document.getElementById('themeToggle');
+        const icon = document.getElementById('themeIcon');
+
+        function updateIcon(theme) {
+          if (theme === 'dark') {
+            icon.textContent = '🌙';
+          } else {
+            icon.textContent = '☀️';
+          }
+        }
+
+        function setTheme(theme) {
+          document.documentElement.setAttribute('data-bs-theme', theme);
+          localStorage.setItem('theme', theme);
+          updateIcon(theme);
+        }
+
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme') || 'light';
+        updateIcon(currentTheme);
+
+        toggle?.addEventListener('click', function () {
+          const activeTheme = document.documentElement.getAttribute('data-bs-theme') === 'dark' ? 'light' : 'dark';
+          setTheme(activeTheme);
+        });
+      })();
+    </script>
+  </body>
+  </html>
+
+

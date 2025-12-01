@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Инвентаризация</h4>
+  {% if doc %}
+    <form method="post" action="{{ url_for('inventory.inv_post', inv_id=doc.id) }}">
+      <button class="btn btn-accent" {% if doc.status=='posted' %}disabled{% endif %}>Провести</button>
+    </form>
+  {% endif %}
+ </div>
+
+{% if not doc %}
+<div class="card bg-dark border-secondary">
+  <div class="card-body">
+    <form class="row g-2" method="post" action="{{ url_for('inventory.inv_create') }}">
+      <div class="col-md-6">
+        <label class="form-label">Склад</label>
+        <select class="form-select" name="warehouse_id" required>
+          {% for w in warehouses %}<option value="{{w.id}}">{{w.name}}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-6 d-grid"><button class="btn btn-accent" style="margin-top:32px">Создать</button></div>
+    </form>
+  </div>
+ </div>
+{% else %}
+
+<div class="card bg-dark border-secondary mb-3">
+  <div class="card-body">
+    <div class="row g-2">
+      <div class="col-md-3"><strong>Номер:</strong> {{doc.id}}</div>
+      <div class="col-md-3"><strong>Дата:</strong> {{doc.date}}</div>
+      <div class="col-md-3"><strong>Статус:</strong> {{doc.status}}</div>
+      <div class="col-md-3"><strong>Склад:</strong> {{doc.warehouse and doc.warehouse.name}}</div>
+    </div>
+    <div class="mt-2 d-flex gap-2">
+      <form method="post" action="{{ url_for('inventory.inv_fill', inv_id=doc.id) }}"><button class="btn btn-outline-light">Заполнить по остаткам</button></form>
+    </div>
+  </div>
+ </div>
+
+<form method="post" action="{{ url_for('inventory.inv_set', inv_id=doc.id) }}">
+  <div class="card bg-dark border-secondary">
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-dark table-striped align-middle">
+          <thead><tr><th>Номенклатура</th><th class="text-end">Учетный остаток</th><th class="text-end">Фактический остаток</th><th class="text-end">Отклонение</th></tr></thead>
+          <tbody>
+            {% for l in doc.lines %}
+              {% set acct = bal_map.get(l.item_id, 0) %}
+              {% set diff = (l.counted_qty or 0) - (acct or 0) %}
+              <tr>
+                <td>{{l.item and l.item.name}}</td>
+                <td class="text-end">{{acct}}</td>
+                <td class="text-end"><input class="form-control text-end" style="max-width:140px;margin-left:auto" name="counted_{{l.id}}" type="number" step="0.001" value="{{l.counted_qty}}"></td>
+                <td class="text-end" style="color:{% if diff<0 %}var(--danger){% elif diff>0 %}var(--success){% else %}inherit{% endif %}">{{diff}}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      <div class="d-grid"><button class="btn btn-outline-light">Сохранить изменения</button></div>
+    </div>
+  </div>
+</form>
+{% endif %}
+{% endblock %}
+
+

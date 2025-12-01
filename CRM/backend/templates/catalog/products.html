@@ -1,0 +1,255 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-3">
+  <div>
+    <h2 class="mb-1">Каталог блюд</h2>
+    <p class="text-secondary mb-0">Актуализируйте ассортимент, описания, пищевую ценность и цены для команды.</p>
+  </div>
+  <div class="d-flex flex-wrap gap-2">
+    <a class="btn btn-outline-light" href="{{ url_for('catalog.manage_categories') }}">Управление категориями</a>
+    <a class="btn btn-accent" href="{{ url_for('catalog.new_product') }}">Добавить новое блюдо</a>
+  </div>
+</div>
+
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3 mb-4">
+  <form method="get" class="d-flex align-items-center gap-2">
+    <input type="hidden" name="view" value="{{ view_mode }}">
+    <select class="form-select" name="category" onchange="this.form.submit()">
+      <option value="" {% if selected_category_id is none %}selected{% endif %}>Все категории</option>
+      {% for c in categories %}
+        <option value="{{ c.id }}" {% if selected_category_id == c.id %}selected{% endif %}>
+          {{ c.name }}
+        </option>
+      {% endfor %}
+    </select>
+    <noscript>
+      <button class="btn btn-outline-light">Показать</button>
+    </noscript>
+  </form>
+  <div class="btn-group ms-lg-auto" role="group" aria-label="Переключение вида каталога">
+    <a class="btn btn-sm {% if view_mode == 'grid' %}btn-accent{% else %}btn-outline-light{% endif %}" href="{{ url_for('catalog.list_products', view='grid', category=selected_category_id if selected_category_id is not none else None) }}">Плитка</a>
+    <a class="btn btn-sm {% if view_mode == 'list' %}btn-accent{% else %}btn-outline-light{% endif %}" href="{{ url_for('catalog.list_products', view='list', category=selected_category_id if selected_category_id is not none else None) }}">Список</a>
+  </div>
+</div>
+
+<style>
+  .product-card img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    border-radius: 12px;
+    margin-bottom: 1rem;
+  }
+  .product-card .card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+  .nutrient-list {
+    list-style: none;
+    padding-left: 0;
+    margin-bottom: 0;
+  }
+  .nutrient-list li {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid var(--border-color);
+  }
+  .nutrient-list li:last-child {
+    border-bottom: none;
+  }
+  .product-table-img {
+    width: 72px;
+    height: 72px;
+    object-fit: cover;
+    border-radius: 12px;
+  }
+</style>
+
+{% if products %}
+  {% if view_mode == 'grid' %}
+  <div class="row g-3">
+    {% for p in products %}
+    <div class="col-xl-4 col-lg-6">
+      <div class="card product-card h-100">
+        <div class="card-body">
+          {% if p.image_url %}
+            {% if p.image_url.startswith('http') %}
+              <img src="{{ p.image_url }}" alt="{{ p.name }}">
+            {% else %}
+              <img src="{{ url_for('static', filename=p.image_url) }}" alt="{{ p.name }}">
+            {% endif %}
+          {% else %}
+            <div class="d-flex align-items-center justify-content-center bg-body-secondary rounded-3 mb-3" style="height: 180px;">
+              <span class="text-secondary">Фото не загружено</span>
+            </div>
+          {% endif %}
+          <div class="d-flex justify-content-between align-items-start">
+            <div>
+              <h5 class="mb-1">{{ p.name }}</h5>
+              <div class="text-secondary small">
+                {% if p.category %}
+                  Категория: {{ p.category.name }}
+                {% else %}
+                  Без категории
+                {% endif %}
+              </div>
+            </div>
+            <div class="text-end">
+              <div class="fw-semibold fs-4">{{ "{:,.2f}".format(p.price) }} ₽</div>
+              <div class="text-secondary small">за порцию</div>
+            </div>
+          </div>
+          <p class="text-secondary mb-0">{{ p.description or 'Описание пока не добавлено.' }}</p>
+          <div class="row g-3">
+            <div class="col-sm-6">
+              <div class="bg-dark rounded-3 p-3 h-100">
+                <div class="text-secondary small text-uppercase mb-2">Пищевая ценность / 100 г</div>
+                <ul class="nutrient-list small">
+                  <li><span>Белки</span><span>
+                    {% if p.protein_100g is not none %}
+                      {{ "{:,.2f}".format(p.protein_100g) }} г
+                    {% else %}
+                      —
+                    {% endif %}
+                  </span></li>
+                  <li><span>Жиры</span><span>
+                    {% if p.fat_100g is not none %}
+                      {{ "{:,.2f}".format(p.fat_100g) }} г
+                    {% else %}
+                      —
+                    {% endif %}
+                  </span></li>
+                  <li><span>Углеводы</span><span>
+                    {% if p.carb_100g is not none %}
+                      {{ "{:,.2f}".format(p.carb_100g) }} г
+                    {% else %}
+                      —
+                    {% endif %}
+                  </span></li>
+                  <li><span>Ккал</span><span>
+                    {% if p.kcal_100g is not none %}
+                      {{ p.kcal_100g }} ккал
+                    {% else %}
+                      —
+                    {% endif %}
+                  </span></li>
+                </ul>
+              </div>
+            </div>
+            <div class="col-sm-6">
+              <div class="bg-dark rounded-3 p-3 h-100 d-flex flex-column justify-content-between">
+                <div>
+                  <div class="text-secondary small text-uppercase mb-1">Порция</div>
+                  <div class="fw-semibold fs-5">
+                    {% if p.portion_grams %}
+                      {{ p.portion_grams }} г
+                    {% else %}
+                      —
+                    {% endif %}
+                  </div>
+                  <div class="text-secondary small">Стандартная порция блюда</div>
+                </div>
+                <div class="text-secondary small mt-3">
+                  ID товара: {{ p.id }}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="d-flex justify-content-end">
+            <a class="btn btn-outline-light btn-sm" href="{{ url_for('catalog.edit_product', product_id=p.id) }}">Редактировать</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="card bg-dark border-secondary">
+    <div class="table-responsive">
+      <table class="table table-dark table-hover align-middle mb-0">
+        <thead class="text-secondary small text-uppercase">
+          <tr>
+            <th scope="col">Фото</th>
+            <th scope="col">Наименование</th>
+            <th scope="col">Описание</th>
+            <th scope="col">Порция</th>
+            <th scope="col">БЖУ / 100 г</th>
+            <th scope="col">Ккал / 100 г</th>
+            <th scope="col" class="text-end">Цена</th>
+            <th scope="col" class="text-end">Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in products %}
+          <tr>
+            <td>
+              {% if p.image_url %}
+                {% if p.image_url.startswith('http') %}
+                  <img src="{{ p.image_url }}" alt="{{ p.name }}" class="product-table-img">
+                {% else %}
+                  <img src="{{ url_for('static', filename=p.image_url) }}" alt="{{ p.name }}" class="product-table-img">
+                {% endif %}
+              {% else %}
+                <div class="d-flex align-items-center justify-content-center bg-body-secondary rounded-3 product-table-img">
+                  <span class="text-secondary small text-center">—</span>
+                </div>
+              {% endif %}
+            </td>
+            <td>
+              <div class="fw-semibold">{{ p.name }}</div>
+              <div class="text-secondary small">
+                {% if p.category %}
+                  Категория: {{ p.category.name }}
+                {% else %}
+                  Без категории
+                {% endif %}
+              </div>
+              <div class="text-secondary small">ID: {{ p.id }}</div>
+            </td>
+            <td class="text-secondary">{{ p.description or '—' }}</td>
+            <td>
+              {% if p.portion_grams %}
+                {{ p.portion_grams }} г
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>
+              <div class="small">
+                <div>Б: {% if p.protein_100g is not none %}{{ "{:,.2f}".format(p.protein_100g) }} г{% else %}—{% endif %}</div>
+                <div>Ж: {% if p.fat_100g is not none %}{{ "{:,.2f}".format(p.fat_100g) }} г{% else %}—{% endif %}</div>
+                <div>У: {% if p.carb_100g is not none %}{{ "{:,.2f}".format(p.carb_100g) }} г{% else %}—{% endif %}</div>
+              </div>
+            </td>
+            <td>
+              {% if p.kcal_100g is not none %}
+                {{ p.kcal_100g }} ккал
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td class="text-end fw-semibold">{{ "{:,.2f}".format(p.price) }} ₽</td>
+            <td class="text-end">
+              <a class="btn btn-sm btn-outline-light" href="{{ url_for('catalog.edit_product', product_id=p.id) }}">Редактировать</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  {% endif %}
+{% else %}
+  <div class="card bg-dark border-secondary">
+    <div class="card-body text-center text-secondary py-5">
+      {% if selected_category_id is not none %}
+        В выбранной категории пока нет блюд. Добавьте блюдо или смените фильтр.
+      {% else %}
+        В каталоге пока нет блюд. Добавьте первое с помощью кнопки «Добавить новое блюдо».
+      {% endif %}
+    </div>
+  </div>
+{% endif %}
+{% endblock %}

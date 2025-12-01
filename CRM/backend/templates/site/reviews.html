@@ -1,0 +1,497 @@
+{% extends 'site/layout.html' %}
+{% block page_title %}Оставить отзыв{% endblock %}
+{% block extra_css %}
+  <style>
+    body {
+      background-color: var(--site-bg, #121212) !important;
+    }
+    
+    /* Контейнер формы */
+    .reviews-form-container {
+      max-width: 900px;
+      margin: 60px auto 80px;
+      padding: 0 20px;
+    }
+    
+    /* Заголовки */
+    .reviews-header {
+      text-align: center;
+      margin-bottom: 50px;
+    }
+    
+    .reviews-header h1 {
+      font-family: 'Roboto Slab';
+      font-size: 42px;
+      font-weight: 600;
+      color: var(--site-text, #fff);
+      margin: 0 0 16px 0;
+      line-height: 1.2;
+    }
+    
+    .reviews-header h2 {
+      font-family: 'Roboto Slab';
+      font-size: 20px;
+      font-weight: 300;
+      color: var(--site-muted, #bfbfbf);
+      margin: 0;
+      line-height: 1.5;
+    }
+    
+    /* Форма */
+    #reviewForm {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    
+    /* Секция формы */
+    .form-section {
+      background: var(--site-surface, #262626);
+      border: 1px solid var(--site-border, #333);
+      border-radius: 16px;
+      padding: 32px;
+      transition: all 0.3s ease;
+    }
+    
+    .form-section:hover {
+      border-color: var(--brand-secondary, #E2B802);
+      box-shadow: 0 4px 12px rgba(226, 184, 2, 0.1);
+    }
+    
+    .form-section .zagol {
+      font-family: 'Roboto Slab';
+      font-size: 24px;
+      font-weight: 600;
+      color: var(--site-text, #fff);
+      margin: 0 0 12px 0;
+      line-height: 1.3;
+    }
+    
+    .form-section .podzagol {
+      font-family: 'Roboto Slab';
+      font-size: 16px;
+      font-weight: 300;
+      color: var(--site-muted, #bfbfbf);
+      margin: 0 0 28px 0;
+      line-height: 1.6;
+    }
+    
+    /* Слайдер */
+    .slider-wrapper {
+      position: relative;
+      margin: 24px 0;
+    }
+    
+    .range {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--site-bg, #121212);
+      outline: none;
+      -webkit-appearance: none;
+      appearance: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      z-index: 2;
+    }
+    
+    /* Заполненная часть слайдера для WebKit */
+    .range::-webkit-slider-runnable-track {
+      width: 100%;
+      height: 8px;
+      border-radius: 4px;
+      background: var(--site-bg, #121212);
+    }
+    
+    .range::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--brand-primary, #D7472D);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(215, 71, 45, 0.4);
+      transition: all 0.3s ease;
+      margin-top: -8px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .range::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(215, 71, 45, 0.6);
+    }
+    
+    /* Заполненная часть слайдера для Firefox */
+    .range::-moz-range-track {
+      height: 8px;
+      border-radius: 4px;
+      background: var(--site-bg, #121212);
+    }
+    
+    .range::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--brand-primary, #D7472D);
+      cursor: pointer;
+      border: none;
+      box-shadow: 0 2px 6px rgba(215, 71, 45, 0.4);
+      transition: all 0.3s ease;
+    }
+    
+    .range::-moz-range-thumb:hover {
+      transform: scale(1.15);
+      box-shadow: 0 4px 12px rgba(215, 71, 45, 0.6);
+    }
+    
+    /* Прогресс-бар для слайдера */
+    .slider-progress {
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 8px;
+      border-radius: 4px;
+      background: linear-gradient(90deg, var(--brand-primary, #D7472D) 0%, var(--brand-secondary, #E2B802) 100%);
+      pointer-events: none;
+      transition: width 0.1s ease;
+      z-index: 1;
+    }
+    
+    /* Значение слайдера */
+    .slider-value-display {
+      position: absolute;
+      top: -45px;
+      left: 0;
+      transform: translateX(-50%);
+      background: var(--brand-primary, #D7472D);
+      color: #000;
+      font-family: 'Roboto Slab';
+      font-size: 18px;
+      font-weight: 600;
+      padding: 8px 16px;
+      border-radius: 8px;
+      min-width: 50px;
+      text-align: center;
+      box-shadow: 0 4px 12px rgba(215, 71, 45, 0.3);
+      transition: all 0.3s ease;
+      pointer-events: none;
+    }
+    
+    .slider-value-display::after {
+      content: '';
+      position: absolute;
+      bottom: -6px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 0;
+      height: 0;
+      border-left: 6px solid transparent;
+      border-right: 6px solid transparent;
+      border-top: 6px solid var(--brand-primary, #D7472D);
+    }
+    
+    /* Метки слайдера */
+    .slider-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 12px;
+      font-family: 'Roboto Slab';
+      font-size: 14px;
+      color: var(--site-muted, #9B9B9B);
+      font-weight: 300;
+    }
+    
+    /* Текстовые поля */
+    .input_txt {
+      width: 100%;
+      padding: 16px 20px;
+      font-family: 'Roboto Slab';
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--site-text, #fff);
+      background-color: var(--site-bg, #121212);
+      border: 2px solid var(--site-border, #333);
+      border-radius: 12px;
+      outline: none;
+      transition: all 0.3s ease;
+      box-sizing: border-box;
+    }
+    
+    .input_txt:focus {
+      border-color: var(--brand-secondary, #E2B802);
+      box-shadow: 0 0 0 4px rgba(226, 184, 2, 0.1);
+    }
+    
+    .input_txt::placeholder {
+      color: var(--site-muted, #9B9B9B);
+    }
+    
+    /* Кнопка отправки */
+    #sendButton {
+      width: 100%;
+      max-width: 400px;
+      margin: 20px auto 0;
+      padding: 18px 40px;
+      font-family: 'Roboto Slab';
+      font-size: 20px;
+      font-weight: 600;
+      color: #000;
+      background-color: var(--brand-primary, #D7472D);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 12px rgba(215, 71, 45, 0.3);
+    }
+    
+    #sendButton:hover {
+      background-color: #c03d26;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(215, 71, 45, 0.4);
+    }
+    
+    #sendButton:active {
+      transform: translateY(0);
+    }
+    
+    /* Список отзывов */
+    .reviews-wrapper {
+      max-width: 1200px;
+      margin: 80px auto 120px;
+      padding: 0 20px;
+    }
+    
+    .reviews-title {
+      font-family: 'Roboto Slab';
+      font-size: 36px;
+      font-weight: 600;
+      color: var(--site-text, #fff);
+      margin: 0 0 40px 0;
+      text-align: center;
+    }
+    
+    .reviews-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 24px;
+    }
+    
+    .review-card {
+      background: var(--site-surface, #262626);
+      border: 1px solid var(--site-border, #333);
+      border-radius: 16px;
+      padding: 24px;
+      color: var(--site-text, #fff);
+      font-family: 'Roboto Slab';
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      transition: all 0.3s ease;
+    }
+    
+    .review-card:hover {
+      border-color: var(--brand-secondary, #E2B802);
+      box-shadow: 0 4px 12px rgba(226, 184, 2, 0.1);
+      transform: translateY(-2px);
+    }
+    
+    .review-card h3 {
+      font-size: 20px;
+      font-weight: 600;
+      margin: 0;
+      color: var(--brand-secondary, #E2B802);
+    }
+    
+    .review-card time {
+      font-size: 14px;
+      color: var(--site-muted, #9B9B9B);
+    }
+    
+    .review-card dl {
+      margin: 0;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 8px 16px;
+      font-size: 16px;
+    }
+    
+    .review-card dt {
+      color: var(--site-muted, #9B9B9B);
+      font-weight: 400;
+    }
+    
+    .review-card dd {
+      color: var(--site-text, #fff);
+      font-weight: 600;
+      margin: 0;
+    }
+    
+    .review-card p {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--site-text, #fff);
+    }
+    
+    .review-location {
+      font-size: 14px;
+      color: var(--site-muted, #9B9B9B);
+      font-style: italic;
+    }
+    
+    /* Адаптивность */
+    @media (max-width: 768px) {
+      .reviews-form-container {
+        margin: 40px auto 60px;
+        padding: 0 16px;
+      }
+      
+      .reviews-header h1 {
+        font-size: 32px;
+      }
+      
+      .reviews-header h2 {
+        font-size: 18px;
+      }
+      
+      .form-section {
+        padding: 24px 20px;
+      }
+      
+      .form-section .zagol {
+        font-size: 20px;
+      }
+      
+      .form-section .podzagol {
+        font-size: 15px;
+      }
+      
+      .reviews-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .slider-value-display {
+        font-size: 16px;
+        padding: 6px 12px;
+      }
+    }
+  </style>
+{% endblock %}
+{% block content %}
+  <div class="reviews-form-container">
+    <div class="reviews-header">
+      <h1>Оцени качество в заведении</h1>
+      <h2>Твой отзыв даст понимание, удовлетворили ли мы твои потребности и поможет нам стать лучше!</h2>
+    </div>
+    
+    <form method="post" id="reviewForm">
+      <section class="form-section" id="feedback">
+        <p class="zagol">1) Оцени качество сервиса</p>
+        <p class="podzagol">Персонал был вежлив и учтив. Тебя поприветствовали, уточнили потребности, уделяли внимание на протяжении обслуживания, попрощались. Сам персонал выглядел опрятно.</p>
+        <div class="slider-wrapper">
+          <span class="slider-value-display" id="value">{{ form_data.get('service_rating', '5') }}</span>
+          <div class="slider-progress" id="progress_range"></div>
+          <input class="range" id="range" name="service_rating" type="range" min="0" max="10" step="1" value="{{ form_data.get('service_rating', '5') }}">
+          <div class="slider-labels">
+            <span>0</span>
+            <span>10</span>
+          </div>
+        </div>
+      </section>
+      
+      <section class="form-section">
+        <p class="zagol">2) Оцени качество продукта</p>
+        <p class="podzagol">Ты доволен качеством напитков и еды? Продукт удовлетворил твои потребности и соответствовал ожиданиям?</p>
+        <div class="slider-wrapper">
+          <span class="slider-value-display" id="value_2">{{ form_data.get('product_rating', '5') }}</span>
+          <div class="slider-progress" id="progress_range_2"></div>
+          <input class="range" id="range_2" name="product_rating" type="range" min="0" max="10" step="1" value="{{ form_data.get('product_rating', '5') }}">
+          <div class="slider-labels">
+            <span>0</span>
+            <span>10</span>
+          </div>
+        </div>
+      </section>
+      
+      <section class="form-section">
+        <p class="zagol">3) Оцени оформление\внешний вид</p>
+        <p class="podzagol">На внутренней и внешней территории заведения были чистота и порядок? Интерьер приятный, располагает? Расположение заведения удобное?</p>
+        <div class="slider-wrapper">
+          <span class="slider-value-display" id="value_3">{{ form_data.get('ambience_rating', '5') }}</span>
+          <div class="slider-progress" id="progress_range_3"></div>
+          <input class="range" id="range_3" name="ambience_rating" type="range" min="0" max="10" step="1" value="{{ form_data.get('ambience_rating', '5') }}">
+          <div class="slider-labels">
+            <span>0</span>
+            <span>10</span>
+          </div>
+        </div>
+      </section>
+      
+      <section class="form-section">
+        <p class="zagol">4) Насколько вероятно, что вы порекомендуете нас другу, коллеге или родственнику?</p>
+        <div class="slider-wrapper">
+          <span class="slider-value-display" id="value_4">{{ form_data.get('recommend_rating', '5') }}</span>
+          <div class="slider-progress" id="progress_range_4"></div>
+          <input class="range" id="range_4" name="recommend_rating" type="range" min="0" max="10" step="1" value="{{ form_data.get('recommend_rating', '5') }}">
+          <div class="slider-labels">
+            <span>0</span>
+            <span>10</span>
+          </div>
+        </div>
+      </section>
+      
+      <section class="form-section">
+        <p class="zagol">5) Напиши, чем ты доволен и что мы можем улучшить в своей работе:</p>
+        <p class="podzagol">Чем мы можем гордиться, а что исправить в своей работе?</p>
+        <input id="goodComment" class="input_txt" name="comment" type="text" placeholder="Ваш ответ" value="{{ form_data.get('comment', '') }}">
+      </section>
+      
+      <section class="form-section">
+        <p class="zagol">6) Укажи адрес, по которому ты оставляешь отзыв</p>
+        <p class="podzagol">Город, улица, дом</p>
+        <input id="adress" class="input_txt" name="location" type="text" placeholder="Ваш ответ" value="{{ form_data.get('location', '') }}">
+      </section>
+      
+      <button id="sendButton" type="submit">Отправить отзыв</button>
+    </form>
+  </div>
+
+  {% if reviews %}
+    <section class="reviews-wrapper" id="reviews-list">
+      <h2 class="reviews-title">Последние отзывы</h2>
+      <div class="reviews-grid">
+        {% for review in reviews %}
+          <article class="review-card">
+            <h3>{{ review.author_name or 'Гость' }}</h3>
+            <time datetime="{{ review.created_at.isoformat() }}">{{ review.created_at.strftime('%d.%m.%Y %H:%M') }}</time>
+            <dl>
+              <dt>Сервис:</dt>
+              <dd>{{ review.service_rating }}/10</dd>
+              <dt>Продукт:</dt>
+              <dd>{{ review.product_rating }}/10</dd>
+              <dt>Оформление:</dt>
+              <dd>{{ review.ambience_rating }}/10</dd>
+              <dt>Рекомендации:</dt>
+              <dd>{{ review.recommend_rating }}/10</dd>
+              <dt>Средняя оценка:</dt>
+              <dd>{{ review.average_score() }}</dd>
+            </dl>
+            {% if review.comment %}
+              <p>{{ review.comment }}</p>
+            {% endif %}
+            {% if review.location %}
+              <p class="review-location">{{ review.location }}</p>
+            {% endif %}
+          </article>
+        {% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}
+{% block extra_scripts %}
+  <script src="{{ url_for('static', filename='site_src/reviews.js') }}"></script>
+{% endblock %}
+

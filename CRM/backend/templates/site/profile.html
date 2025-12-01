@@ -1,0 +1,508 @@
+{% extends 'site/layout.html' %}
+{% block page_title %}Профиль — DON Хот-Дог{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='site_src/profil.css') }}">
+  <style>
+    body {
+      background-color: var(--site-bg, #121212) !important;
+    }
+    .bonuses {
+      display: block !important;
+      padding: 20px;
+      background-color: var(--site-surface, #262626) !important;
+      color: var(--site-text, #fff) !important;
+      border: 1px solid var(--site-border, #333) !important;
+    }
+    .bonuses ul {
+      padding: 0;
+    }
+    .bonus-link {
+      display: inline-block;
+      margin-top: 12px;
+      color: #E2B802;
+      text-decoration: none;
+      font-family: "Roboto Slab";
+      font-weight: 600;
+    }
+    .orders {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .order {
+      background-color: var(--site-surface, #262626) !important;
+      border-radius: 10px;
+      padding: 20px;
+      color: var(--site-text, #fff) !important;
+      font-family: "Roboto Slab";
+      min-height: 180px;
+      border: 1px solid var(--site-border, #333) !important;
+    }
+    .order p {
+      margin: 4px 0;
+    }
+    .glav {
+      gap: 30px;
+    }
+    .zakazi {
+      display: block !important;
+      background-color: var(--site-surface, #262626) !important;
+      padding: 25px;
+      border-radius: 10px;
+      margin: 40px 279px;
+      color: var(--site-text, #fff) !important;
+      font-family: "Roboto Slab";
+      border: 1px solid var(--site-border, #333) !important;
+    }
+    .zakazi > h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+    #exitAcc {
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--site-surface, #262626) !important;
+      color: var(--site-text, #fff) !important;
+      padding: 8px 18px;
+      border-radius: 10px;
+      font-family: "Roboto Slab";
+      font-size: 16px;
+      text-decoration: none;
+      transition: .2s;
+      text-align: center;
+      margin-left: 10px;
+      width: auto;
+      min-width: 100px;
+      line-height: 1.5;
+    }
+    #exitAcc:hover {
+      background-color: #D7472D;
+      color: #000;
+    }
+    .settings-section {
+      background-color: var(--site-surface, #262626) !important;
+      color: var(--site-text, #fff) !important;
+      border: 1px solid var(--site-border, #333) !important;
+    }
+    .settings-form input {
+      background-color: var(--site-bg, #121212) !important;
+      color: var(--site-text, #fff) !important;
+      border-color: var(--site-border, #333) !important;
+    }
+    .profile-modal-content, .modal-content {
+      background-color: var(--site-surface, #262626) !important;
+      color: var(--site-text, #fff) !important;
+      border: 1px solid var(--site-border, #333) !important;
+    }
+    .profile-close, .close {
+      color: var(--site-text, #fff) !important;
+    }
+    .order-details-table th, .order-details-table td {
+      background-color: var(--site-surface, #262626) !important;
+      color: var(--site-text, #fff) !important;
+      border-color: var(--site-border, #333) !important;
+    }
+    .edit-profile-btn {
+      background-color: #D7472D;
+      color: #000;
+      border: none;
+      border-radius: 10px;
+      padding: 8px 18px;
+      font-family: "Roboto Slab";
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+      margin-left: 10px;
+    }
+    .edit-profile-btn:hover {
+      background-color: #ff5c41;
+      color: #E2B802;
+    }
+    .profile-modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    .profile-modal-content {
+      background-color: var(--site-surface, #262626);
+      margin: 5% auto;
+      padding: 30px;
+      padding-top: 20px;
+      border: 1px solid var(--site-border, #333);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      color: var(--site-text, #fff);
+    }
+    .profile-modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      margin-top: 0;
+    }
+    .profile-modal-header h3 {
+      font-size: 24px;
+      color: #fff;
+      margin: 0;
+      font-weight: 600;
+    }
+    .profile-close {
+      color: var(--site-text, #fff);
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .profile-close:hover {
+      color: #E2B802;
+    }
+    .settings-form {
+      margin-bottom: 25px;
+      padding-bottom: 25px;
+      border-bottom: 1px solid var(--site-border, #333);
+    }
+    .settings-form:last-child {
+      border-bottom: none;
+    }
+    .settings-form label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+    .settings-form input {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid var(--site-border, #333);
+      background-color: var(--site-bg, #121212);
+      color: var(--site-text, #fff);
+      font-family: "Roboto Slab";
+      margin-bottom: 15px;
+      box-sizing: border-box;
+    }
+    .settings-form button {
+      background-color: #D7472D;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+      font-family: "Roboto Slab";
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .settings-form button:hover {
+      background-color: #ff5c41;
+      color: #E2B802;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 2000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      overflow: auto;
+      background-color: rgba(0, 0, 0, 0.7);
+    }
+    .modal-content {
+      background-color: var(--site-surface, #262626);
+      margin: 5% auto;
+      padding: 30px;
+      border: 1px solid var(--site-border, #333);
+      border-radius: 20px;
+      width: 90%;
+      max-width: 700px;
+      color: var(--site-text, #fff);
+    }
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .close {
+      color: var(--site-text, #fff);
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #E2B802;
+    }
+    .order-details-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+    }
+    .order-details-table th,
+    .order-details-table td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--site-border, #333);
+      background-color: var(--site-surface, #262626);
+      color: var(--site-text, #fff);
+    }
+    .order-details-table th {
+      font-weight: 600;
+      background-color: var(--site-bg, #121212);
+    }
+    .order-total {
+      margin-top: 20px;
+      font-size: 20px;
+      font-weight: 600;
+      text-align: right;
+    }
+    .details-btn {
+      background-color: #D7472D;
+      color: #000;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 16px;
+      font-family: "Roboto Slab";
+      font-weight: 600;
+      cursor: pointer;
+      transition: .2s;
+      font-size: 14px;
+      flex-shrink: 0;
+    }
+    .details-btn:hover {
+      background-color: #ff5c41;
+      color: #E2B802;
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+<section class="glav">
+  <section class="profil">
+    {% if current_user.avatar_url %}
+      <img src="{{ current_user.avatar_url }}" alt="Аватар" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover;">
+    {% else %}
+      <img src="{{ url_for('static', filename='site_src/img/ava.png') }}" alt="Аватар">
+    {% endif %}
+    <article class="txt">
+      <h1 id="username">{{ current_user.full_name or current_user.email }}</h1>
+      <p id="phoneNumber">{{ current_user.email }}</p>
+      <button class="edit-profile-btn" onclick="openProfileModal()">Редактировать</button>
+      <a id="exitAcc" href="{{ url_for('auth.logout') }}">Выйти</a>
+    </article>
+  </section>
+  <section class="bonuses">
+    <ul>
+      <h2>Бонусы: {{ customer.points if customer else 0 }}</h2>
+      <li>История:</li>
+      {% if orders %}
+        {% for order in orders[:5] %}
+          <li>#{{ order.id }} — {{ "{:,.2f}".format(order.total or 0) }} ₽</li>
+        {% endfor %}
+      {% else %}
+        <li>Бонусы появятся после первого заказа.</li>
+      {% endif %}
+    </ul>
+    <a href="{{ url_for('site.menu') }}" class="bonus-link">Заказать ещё</a>
+  </section>
+</section>
+
+<section class="zakazi">
+  <h3>История заказов</h3>
+  <section class="orders">
+    {% if orders %}
+      {% for order in orders %}
+        <article class="order">
+          <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+            <p style="margin: 0;">Заказ №: {{ order.id }}</p>
+            <button class="details-btn" onclick="openOrderModal({{ order.id }})" style="margin: 0;">Подробнее</button>
+          </div>
+          <p>Дата: {{ order.created_at.strftime('%d.%m.%Y %H:%M') if order.created_at else '—' }}</p>
+          <p id="ac">Статус: {{ order.status }}</p>
+          <p>---------------------------</p>
+          <p>Сумма: {{ "{:,.2f}".format(order.total or 0) }} ₽</p>
+          <p>Комментарий: {{ order.comment or '—' }}</p>
+        </article>
+      {% endfor %}
+    {% else %}
+      <article class="order">
+        <p>У вас пока нет заказов.</p>
+      </article>
+    {% endif %}
+  </section>
+</section>
+
+<!-- Модальное окно для редактирования профиля -->
+<div id="profileModal" class="profile-modal">
+  <div class="profile-modal-content">
+    <div class="profile-modal-header">
+      <h3>Редактирование профиля</h3>
+      <span class="profile-close" onclick="closeProfileModal()">&times;</span>
+    </div>
+
+    <form class="settings-form" method="POST" action="{{ url_for('site.update_avatar') }}" enctype="multipart/form-data">
+      <label for="avatar">Аватар:</label>
+      {% if current_user.avatar_url %}
+        <div style="margin-bottom: 15px;">
+          <img src="{{ current_user.avatar_url }}" alt="Текущий аватар" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; display: block;">
+        </div>
+      {% endif %}
+      <input type="file" id="avatar" name="avatar" accept="image/*">
+      <div style="display: flex; gap: 10px; margin-top: 10px;">
+        <button type="submit">Загрузить/Изменить аватар</button>
+        {% if current_user.avatar_url %}
+          <button type="button" onclick="deleteAvatar()" style="background-color: #D7472D;">Удалить аватар</button>
+        {% endif %}
+      </div>
+    </form>
+
+    <form class="settings-form" method="POST" action="{{ url_for('site.update_full_name') }}">
+      <label for="full_name">ФИО:</label>
+      <input type="text" id="full_name" name="full_name" value="{{ current_user.full_name or '' }}" placeholder="Введите ваше ФИО (необязательно)">
+      <button type="submit">Сохранить ФИО</button>
+    </form>
+
+    <form class="settings-form" method="POST" action="{{ url_for('site.update_email') }}">
+      <label for="new_email">Изменить email:</label>
+      <input type="email" id="new_email" name="new_email" value="{{ current_user.email }}" required>
+      <button type="submit">Сохранить email</button>
+    </form>
+
+    <form class="settings-form" method="POST" action="{{ url_for('site.update_password') }}" onsubmit="return validatePasswordForm()">
+      <label for="current_password">Текущий пароль:</label>
+      <input type="password" id="current_password" name="current_password" required>
+      <label for="new_password">Новый пароль:</label>
+      <input type="password" id="new_password" name="new_password" required>
+      <label for="confirm_password">Подтвердите новый пароль:</label>
+      <input type="password" id="confirm_password" name="confirm_password" required>
+      <div id="password-error" style="color: #D7472D; margin-bottom: 15px; display: none;"></div>
+      <button type="submit">Изменить пароль</button>
+    </form>
+  </div>
+</div>
+
+<!-- Модальное окно с деталями заказа -->
+<div id="orderModal" class="modal">
+  <div class="modal-content">
+    <div class="modal-header">
+      <h3>Детали заказа #<span id="modalOrderId"></span></h3>
+      <span class="close" onclick="closeOrderModal()">&times;</span>
+    </div>
+    <div id="modalOrderContent">
+      <!-- Содержимое будет загружено через JavaScript -->
+    </div>
+  </div>
+</div>
+
+<script>
+  function openProfileModal() {
+    document.getElementById('profileModal').style.display = 'block';
+  }
+
+  function closeProfileModal() {
+    document.getElementById('profileModal').style.display = 'none';
+  }
+
+  function deleteAvatar() {
+    if (confirm('Вы уверены, что хотите удалить аватар?')) {
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = '{{ url_for("site.delete_avatar") }}';
+      document.body.appendChild(form);
+      form.submit();
+    }
+  }
+
+  window.onclick = function(event) {
+    const profileModal = document.getElementById('profileModal');
+    const orderModal = document.getElementById('orderModal');
+    if (event.target == profileModal) {
+      closeProfileModal();
+    }
+    if (event.target == orderModal) {
+      closeOrderModal();
+    }
+  }
+
+  function validatePasswordForm() {
+    const newPassword = document.getElementById('new_password').value;
+    const confirmPassword = document.getElementById('confirm_password').value;
+    const errorDiv = document.getElementById('password-error');
+
+    if (newPassword !== confirmPassword) {
+      errorDiv.textContent = 'Новый пароль и подтверждение не совпадают';
+      errorDiv.style.display = 'block';
+      return false;
+    }
+
+    if (newPassword.length < 6) {
+      errorDiv.textContent = 'Пароль должен содержать минимум 6 символов';
+      errorDiv.style.display = 'block';
+      return false;
+    }
+
+    errorDiv.style.display = 'none';
+    return true;
+  }
+
+  function openOrderModal(orderId) {
+    fetch(`/api/order/${orderId}/details/`)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('modalOrderId').textContent = orderId;
+        let html = `
+          <p><strong>Дата:</strong> ${data.created_at || '—'}</p>
+          <p><strong>Статус:</strong> ${data.status || '—'}</p>
+          <p><strong>Комментарий:</strong> ${data.comment || '—'}</p>
+          <table class="order-details-table">
+            <thead>
+              <tr>
+                <th>Товар</th>
+                <th style="text-align: right;">Количество</th>
+                <th style="text-align: right;">Цена</th>
+                <th style="text-align: right;">Сумма</th>
+              </tr>
+            </thead>
+            <tbody>
+        `;
+        if (data.items && data.items.length > 0) {
+          data.items.forEach(item => {
+            html += `
+              <tr>
+                <td>${item.product_name || '—'}</td>
+                <td style="text-align: right;">${item.qty || 0}</td>
+                <td style="text-align: right;">${(item.unit_price || 0).toFixed(2)} ₽</td>
+                <td style="text-align: right;">${(item.sum || 0).toFixed(2)} ₽</td>
+              </tr>
+            `;
+          });
+        } else {
+          html += '<tr><td colspan="4" style="text-align: center;">Нет товаров</td></tr>';
+        }
+        html += `
+            </tbody>
+          </table>
+          <div class="order-total">
+            <strong>Итого: ${(data.total || 0).toFixed(2)} ₽</strong>
+          </div>
+        `;
+        document.getElementById('modalOrderContent').innerHTML = html;
+        document.getElementById('orderModal').style.display = 'block';
+      })
+      .catch(error => {
+        console.error('Ошибка загрузки деталей заказа:', error);
+        alert('Не удалось загрузить детали заказа');
+      });
+  }
+
+  function closeOrderModal() {
+    document.getElementById('orderModal').style.display = 'none';
+  }
+</script>
+{% endblock %}

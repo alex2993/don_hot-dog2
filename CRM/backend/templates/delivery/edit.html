@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <div class="d-flex align-items-center gap-2">
+    <a href="{{ url_for('delivery.home') }}" class="btn btn-outline-light">← Вернуться назад</a>
+    <h4 class="m-0">Заказ доставки{% if order %} #{{order.id}}{% endif %}</h4>
+  </div>
+  {% if order %}
+  <form method="post" action="{{ url_for('delivery.set_status', order_id=order.id) }}" class="d-flex gap-2">
+    <select class="form-select" name="status">
+      {% for val, label in status_options %}
+        <option value="{{val}}" {% if order.status==val %}selected{% endif %}>{{label}}</option>
+      {% endfor %}
+    </select>
+    <select class="form-select" name="courier_id">
+      <option value="">— Курьер не назначен —</option>
+      {% for c in couriers %}<option value="{{c.id}}" {% if order.courier_id==c.id %}selected{% endif %}>{{c.full_name}}</option>{% endfor %}
+    </select>
+    <button class="btn btn-outline-light">Сохранить</button>
+  </form>
+  {% endif %}
+ </div>
+
+{% if not order %}
+<div class="card bg-dark border-secondary">
+  <div class="card-body">
+    <form class="row g-2" method="post" action="{{ url_for('delivery.create') }}">
+      <div class="col-md-3"><label class="form-label">Телефон</label><input class="form-control" name="phone"></div>
+      <div class="col-md-3"><label class="form-label">Имя</label><input class="form-control" name="customer_name"></div>
+      <div class="col-md-6"><label class="form-label">Комментарий</label><input class="form-control" name="comment"></div>
+      <div class="col-md-3"><label class="form-label">Улица</label><input class="form-control" name="street"></div>
+      <div class="col-md-2"><label class="form-label">Дом</label><input class="form-control" name="house"></div>
+      <div class="col-md-2"><label class="form-label">Квартира</label><input class="form-control" name="flat"></div>
+      <div class="col-md-2"><label class="form-label">Подъезд</label><input class="form-control" name="entrance"></div>
+      <div class="col-md-2"><label class="form-label">Этаж</label><input class="form-control" name="floor"></div>
+      <div class="col-md-3"><label class="form-label">Планируемое время</label><input class="form-control" type="datetime-local" name="planned_at"></div>
+      <div class="col-md-3"><label class="form-label">Способ получения</label>
+        <select class="form-select" name="receive_method"><option value="delivery">Доставка</option><option value="pickup">Самовывоз</option><option value="dinein">В зале</option></select>
+      </div>
+      <div class="col-md-3"><label class="form-label">Тип оплаты</label>
+        <select class="form-select" name="payment_type"><option value="cash">Наличные</option><option value="card">Карта</option><option value="online">Онлайн</option></select>
+      </div>
+      <div class="col-md-3 d-grid align-end"><button class="btn btn-accent" style="margin-top:32px">Создать</button></div>
+    </form>
+  </div>
+ </div>
+{% else %}
+
+<div class="row g-3">
+  <div class="col-md-6">
+    <div class="card bg-dark border-secondary">
+      <div class="card-body">
+        <h6>Состав заказа — сумма {{order.total}}</h6>
+        <form class="row g-2" method="post" action="{{ url_for('delivery.add_item', order_id=order.id) }}">
+          <div class="col-md-6">
+            <label class="form-label">Номенклатура</label>
+            <select class="form-select" name="product_id">
+              {% for p in products %}<option value="{{p.id}}">{{p.name}} — {{p.price}}</option>{% endfor %}
+            </select>
+          </div>
+          <div class="col-md-3"><label class="form-label">Кол-во</label><input class="form-control" name="qty" type="number" step="1" value="1"></div>
+          <div class="col-md-3 d-grid align-end"><button class="btn btn-outline-light" style="margin-top:32px">Добавить</button></div>
+        </form>
+        <div class="table-responsive mt-3">
+          <table class="table table-dark table-striped align-middle">
+            <thead><tr><th>#</th><th>Наименование</th><th class="text-end">Кол-во</th><th class="text-end">Цена</th><th class="text-end">Сумма</th></tr></thead>
+            <tbody>
+              {% for i in order.items %}
+              <tr><td>{{i.id}}</td><td>{{i.product_name}}</td><td class="text-end">{{i.qty}}</td><td class="text-end">{{i.unit_price}}</td><td class="text-end">{{i.sum}}</td></tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card bg-dark border-secondary">
+      <div class="card-body">
+        <div class="row g-2">
+          <div class="col-md-6"><strong>Телефон:</strong> {{order.phone}}</div>
+          <div class="col-md-6"><strong>Имя:</strong> {{order.customer_name}}</div>
+          <div class="col-md-12"><strong>Адрес:</strong> {{order.street}} {{order.house}}, кв. {{order.flat}}, под. {{order.entrance}}, эт. {{order.floor}}</div>
+          <div class="col-md-6"><strong>Время:</strong> {{order.planned_at}}</div>
+          <div class="col-md-6"><strong>Способ:</strong> {{receive_map.get(order.receive_method, order.receive_method)}}</div>
+          <div class="col-md-6"><strong>Оплата:</strong> {{pay_map.get(order.payment_type, order.payment_type)}}</div>
+          <div class="col-md-12"><strong>Комментарий:</strong> {{order.comment}}</div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+ </div>
+
+{% endif %}
+{% endblock %}
+
+

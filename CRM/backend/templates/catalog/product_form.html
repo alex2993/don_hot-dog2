@@ -1,0 +1,186 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex flex-column flex-lg-row justify-content-between align-items-lg-start gap-3 mb-4">
+  <div>
+    <h2 class="mb-1">
+      {% if product %}
+        Редактирование блюда
+      {% else %}
+        Новое блюдо
+      {% endif %}
+    </h2>
+    <p class="text-secondary mb-0">
+      Заполните данные о блюде: описание, пищевая ценность, фото и цена. Эти сведения увидит персонал при работе с заказами.
+    </p>
+  </div>
+  <div class="d-flex gap-2">
+    <a class="btn btn-outline-light" href="{{ url_for('catalog.list_products') }}">Назад к каталогу</a>
+    {% if product %}
+    <form method="post" action="{{ url_for('catalog.delete_product', product_id=product.id) }}" onsubmit="return confirm('Удалить блюдо «{{ product.name }}»? Отменить действие будет невозможно.');">
+      <button class="btn btn-outline-danger" type="submit">Удалить</button>
+    </form>
+    {% endif %}
+  </div>
+</div>
+
+{% set form_action = url_for('catalog.edit_product', product_id=product.id) if product else url_for('catalog.new_product') %}
+{% set data = form_data or {} %}
+
+<div class="card bg-dark border-secondary">
+  <div class="card-body">
+    <form method="post" action="{{ form_action }}" class="row g-4" enctype="multipart/form-data">
+      <div class="col-md-6">
+        <label class="form-label small text-uppercase text-secondary">Название *</label>
+        <input
+          class="form-control"
+          name="name"
+          value="{{ data.get('name', '') }}"
+          placeholder="Например, Хот-дог «Бруклин»"
+          required
+        >
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-uppercase text-secondary">Категория</label>
+        {% set current_category = data.get('category_id', '') %}
+        <select class="form-select" name="category_id">
+          <option value="">Без категории</option>
+          {% for c in categories %}
+            <option value="{{ c.id }}" {% if current_category|string == c.id|string %}selected{% endif %}>{{ c.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-uppercase text-secondary">Цена за порцию, ₽ *</label>
+        <input
+          class="form-control"
+          name="price"
+          type="number"
+          step="0.01"
+          min="0"
+          value="{{ data.get('price', '') }}"
+          placeholder="0.00"
+          required
+        >
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small text-uppercase text-secondary">Фотография блюда</label>
+        <input
+          class="form-control"
+          name="image_file"
+          type="file"
+          accept="image/*"
+        >
+        <div class="form-text text-secondary">
+          Загрузите изображение блюда (JPG, PNG). Максимальный размер — 5 МБ.
+        </div>
+        {% if product and product.image_url %}
+          {% if product.image_url.startswith('http') %}
+            {% set preview_src = product.image_url %}
+          {% else %}
+            {% set preview_src = url_for('static', filename=product.image_url) %}
+          {% endif %}
+          <div class="mt-3">
+            <div class="text-secondary small mb-2">Текущее изображение:</div>
+            <img src="{{ preview_src }}" alt="{{ product.name }}" class="img-fluid rounded" style="max-height: 220px; object-fit: cover;">
+          </div>
+        {% endif %}
+      </div>
+      <div class="col-md-6">
+        <label class="form-label small text-uppercase text-secondary">Описание</label>
+        <textarea
+          class="form-control"
+          name="description"
+          rows="4"
+          placeholder="Кратко опишите ингредиенты, вкус и рекомендации по подаче."
+        >{{ data.get('description', '') }}</textarea>
+      </div>
+      <div class="col-md-3">
+        <label class="form-label small text-uppercase text-secondary">Вес порции, г</label>
+        <input
+          class="form-control"
+          name="portion_grams"
+          type="number"
+          min="0"
+          value="{{ data.get('portion_grams', '') }}"
+          placeholder="250"
+        >
+      </div>
+      <div class="col-md-9">
+        <label class="form-label small text-uppercase text-secondary d-block">Пищевая ценность / 100 г</label>
+        <div class="row g-3">
+          <div class="col-sm-3">
+            <div class="form-floating">
+              <input
+                class="form-control"
+                id="protein_100g"
+                name="protein_100g"
+                type="number"
+                step="0.01"
+                min="0"
+                value="{{ data.get('protein_100g', '') }}"
+                placeholder="0.00"
+              >
+              <label for="protein_100g" class="text-secondary">Белки, г</label>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-floating">
+              <input
+                class="form-control"
+                id="fat_100g"
+                name="fat_100g"
+                type="number"
+                step="0.01"
+                min="0"
+                value="{{ data.get('fat_100g', '') }}"
+                placeholder="0.00"
+              >
+              <label for="fat_100g" class="text-secondary">Жиры, г</label>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-floating">
+              <input
+                class="form-control"
+                id="carb_100g"
+                name="carb_100g"
+                type="number"
+                step="0.01"
+                min="0"
+                value="{{ data.get('carb_100g', '') }}"
+                placeholder="0.00"
+              >
+              <label for="carb_100g" class="text-secondary">Углеводы, г</label>
+            </div>
+          </div>
+          <div class="col-sm-3">
+            <div class="form-floating">
+              <input
+                class="form-control"
+                id="kcal_100g"
+                name="kcal_100g"
+                type="number"
+                min="0"
+                value="{{ data.get('kcal_100g', '') }}"
+                placeholder="0"
+              >
+              <label for="kcal_100g" class="text-secondary">Ккал</label>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 d-flex justify-content-end gap-2">
+        <a class="btn btn-outline-light" href="{{ url_for('catalog.list_products') }}">Отмена</a>
+        <button class="btn btn-accent px-4" type="submit">
+          {% if product %}
+            Сохранить изменения
+          {% else %}
+            Создать блюдо
+          {% endif %}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+

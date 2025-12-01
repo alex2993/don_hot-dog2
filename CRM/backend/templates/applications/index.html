@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h1 class="h3 mb-1">Заявки на работу</h1>
+      <p class="text-secondary mb-0">Все отклики, оставленные на публичном сайте.</p>
+    </div>
+  </div>
+
+  {% if applications %}
+    <div class="card">
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">#</th>
+              <th scope="col">Имя</th>
+              <th scope="col">Желаемая должность</th>
+              <th scope="col">Город</th>
+              <th scope="col">Телефон</th>
+              <th scope="col">Email</th>
+              <th scope="col" style="min-width: 260px;">Комментарий</th>
+              <th scope="col" class="text-end" style="width: 120px;">Действия</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for application in applications %}
+              <tr>
+                <td>{{ application.id }}</td>
+                <td>{{ application.name }}</td>
+                <td>{{ application.desired_position or '—' }}</td>
+                <td>{{ application.city or '—' }}</td>
+                <td>
+                  {% if application.phone %}
+                    <a href="tel:{{ application.phone }}" class="link-body-emphasis">{{ application.phone }}</a>
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td>
+                  {% if application.email %}
+                    <a href="mailto:{{ application.email }}" class="link-body-emphasis">{{ application.email }}</a>
+                  {% else %}
+                    —
+                  {% endif %}
+                </td>
+                <td>
+                  <form method="post" action="{{ url_for('applications.update_comment', application_id=application.id) }}" class="d-flex flex-column flex-lg-row gap-2 align-items-stretch">
+                    <textarea class="form-control form-control-sm" name="comment" rows="2" placeholder="Комментарий администратора">{{ application.comment or '' }}</textarea>
+                    <button type="submit" class="btn btn-sm btn-outline-primary flex-shrink-0">Сохранить</button>
+                  </form>
+                </td>
+                <td class="text-end">
+                  <form method="post" action="{{ url_for('applications.delete', application_id=application.id) }}" onsubmit="return confirm('Удалить заявку {{ application.name }}?');">
+                    <button type="submit" class="btn btn-sm btn-outline-danger">Удалить</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% else %}
+    <div class="card">
+      <div class="card-body text-center text-secondary py-5">
+        Пока нет новых заявок. Когда кандидаты оставят отклик на сайте, он появится здесь.
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+

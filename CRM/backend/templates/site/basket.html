@@ -1,0 +1,494 @@
+{% extends 'site/layout.html' %}
+{% block page_title %}Корзина — DON Хот-Дог{% endblock %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='site_src/basket.css') }}">
+  <style>
+    .empty-basket {
+      color: #fff;
+      text-align: center;
+      padding: 120px 0;
+      font-family: 'Roboto Slab';
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center !important;
+      min-height: calc(100vh - 250px);
+    }
+    .empty-basket a {
+      color: #E2B802;
+      text-decoration: none;
+    }
+    .basket-wrapper {
+      min-height: 100vh;
+    }
+    .basket-container {
+      display: flex;
+      gap: 30px;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 40px 20px 40px;
+      align-items: flex-start;
+      margin-bottom: 40px;
+    }
+    .basket-items {
+      flex: 1;
+      min-width: 0;
+    }
+    .buy {
+      width: 363px;
+      background-color: #262626;
+      border-radius: 10px;
+      padding: 28px 24px;
+      position: sticky;
+      top: 100px;
+      flex-shrink: 0;
+      margin: 0 !important;
+      align-self: flex-start;
+      box-sizing: border-box;
+      min-height: 320px;
+    }
+    .buy>p {
+      margin: 0 0 20px 0;
+      font-size: 16px;
+      font-family: 'Roboto Slab';
+      font-weight: 300;
+      color: #ffff;
+      word-break: break-word;
+    }
+    .buy>h1 {
+      color: #ffff;
+      font-size: 20px;
+      font-weight: 500;
+      font-family: 'Roboto Slab';
+      margin: 0 0 20px 0;
+    }
+    .buy>button {
+      background-color: #D7472D;
+      border: none;
+      border-radius: 10px;
+      width: 100%;
+      height: 56px;
+      margin: 12px 0;
+      cursor: pointer;
+    }
+    .buy>button:first-of-type {
+      margin-top: 0;
+    }
+    button>a {
+      color: #000000;
+      text-decoration: none;
+      font-size: 20px;
+      font-family: 'Roboto Slab';
+      font-weight: 500;
+      transition: .2s;
+      display: block;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    button>a:hover {
+      color: #E2B802;
+    }
+    main {
+      padding-top: 0;
+      width: 100%;
+      max-width: none;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    main>article {
+      background-color: #262626;
+      padding: 20px;
+      margin-bottom: 0;
+      margin-left: 0;
+      display: flex;
+      align-items: flex-start;
+      gap: 20px;
+      border-radius: 10px;
+      color: #ffff;
+      width: 100%;
+      max-width: none;
+      box-sizing: border-box;
+      position: relative;
+    }
+    .card_img {
+      width: 140px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+    .mains {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .card_title {
+      font-size: 22px;
+      margin: 0;
+    }
+    .kolvo {
+      background-color: #121212;
+      border: none;
+      border-radius: 10px;
+      color: #ffff;
+      font-size: 18px;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 110px;
+      min-width: 110px;
+      margin: 0 10px 0 0;
+      height: 42px;
+      padding: 0 10px;
+      flex-shrink: 0;
+    }
+    .kolvo>p {
+      margin: 0;
+    }
+    .kolvo>input {
+      background: none;
+      color: #ffff;
+      font-size: 20px;
+      font-family: 'Roboto Slab';
+      border: none;
+      cursor: pointer;
+    }
+    .card p[id^="price-"] {
+      font-size: 20px;
+      font-family: 'Roboto Slab';
+      margin: 0 10px 0 0;
+      min-width: 120px;
+      text-align: right;
+    }
+    .del {
+      color: #ffff;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 22px;
+      transition: .2s;
+      align-self: center;
+      margin: 0;
+      flex-shrink: 0;
+    }
+    .del:hover {
+      color: #D7472D;
+    }
+    .update-btn {
+      margin: 20px 0 0;
+      display: flex;
+      justify-content: flex-start;
+    }
+    .update-btn form {
+      background: #262626;
+      border-radius: 10px;
+      padding: 10px 20px;
+    }
+    .update-btn button {
+      background: #D7472D;
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-family: 'Roboto Slab';
+      font-size: 18px;
+      font-weight: 600;
+      padding: 10px 20px;
+      cursor: pointer;
+      transition: .2s;
+    }
+    .update-btn button:hover {
+      color: #E2B802;
+    }
+    .checkout-form {
+      background: #262626;
+      max-width: 800px;
+      margin: 0 auto 40px;
+      padding: 30px;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Roboto Slab';
+      position: relative;
+      z-index: 1;
+    }
+    .checkout-form label {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 16px;
+    }
+    .checkout-form input,
+    .checkout-form textarea,
+    .checkout-form select {
+      width: 100%;
+      background: #121212;
+      border: 1px solid #333;
+      border-radius: 10px;
+      color: #fff;
+      font-family: 'Roboto Slab';
+      font-size: 16px;
+      padding: 10px 14px;
+      margin-bottom: 18px;
+      box-sizing: border-box;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+    .checkout-form select {
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23E2B802' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 18px center;
+      padding: 18px 48px 18px 16px;
+      margin-left: 0;
+      min-height: 60px;
+      line-height: 1.4;
+    }
+    .checkout-form button {
+      background: #D7472D;
+      border: none;
+      border-radius: 10px;
+      color: #000;
+      font-size: 20px;
+      font-weight: 600;
+      padding: 12px 24px;
+      cursor: pointer;
+      transition: .2s;
+      width: 100%;
+    }
+    .checkout-form button:hover {
+      color: #E2B802;
+    }
+    .phone-input-wrapper {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      background: var(--site-bg, #121212);
+      border: 1px solid var(--site-border, #333);
+      border-radius: 10px;
+      padding: 18px 14px;
+      margin-bottom: 6px;
+      height: 60px;
+      box-sizing: border-box;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+    .phone-prefix {
+      font-family: 'Roboto Slab';
+      font-size: 16px;
+      color: #E2B802;
+      flex-shrink: 0;
+      line-height: 1.5;
+      margin: 0;
+      padding: 0;
+    }
+    .phone-input-wrapper input[type="text"] {
+      border: none;
+      background: transparent;
+      color: var(--site-text, #fff);
+      font-family: 'Roboto Slab';
+      font-size: 16px;
+      width: 100%;
+      padding: 0;
+      height: auto;
+      line-height: 1.5;
+      flex: 1;
+      box-sizing: border-box;
+    }
+    .phone-input-wrapper input[type="text"]:focus {
+      outline: none;
+    }
+    .form-hint {
+      margin: 0 0 18px;
+      font-size: 14px;
+      color: #bfbfbf;
+      font-family: 'Roboto Slab';
+    }
+    main {
+      padding-top: 0;
+      width: 100%;
+      max-width: none;
+    }
+    main>article {
+      background-color: #262626;
+      padding: 20px;
+      margin-bottom: 20px;
+      margin-left: 0;
+      display: flex;
+      border-radius: 10px;
+      color: #ffff;
+      width: 100%;
+      max-width: none;
+    }
+    @media (max-width: 1200px) {
+      .basket-container {
+        flex-direction: column;
+      }
+      .buy {
+        position: static;
+        width: 100%;
+      }
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+{% if items %}
+  <div class="basket-wrapper">
+    <div class="basket-container">
+      <div class="basket-items">
+        <form id="basket-update" method="post" action="{{ url_for('site.basket_update') }}">
+          <main>
+            {% for item in items %}
+              <article class="card" id="card-{{ item.product.id }}" data-price="{{ '{:.2f}'.format(item.price) }}">
+                {% set image = item.product.image_url %}
+                {% if image %}
+                  {% if image.startswith('http') %}
+                    <img src="{{ image }}" class="card_img" alt="{{ item.product.name }}">
+                  {% else %}
+                    <img src="{{ url_for('static', filename=image) }}" class="card_img" alt="{{ item.product.name }}">
+                  {% endif %}
+                {% else %}
+                  <img src="{{ url_for('static', filename='site_src/img/1000.png') }}" class="card_img" alt="{{ item.product.name }}">
+                {% endif %}
+                <article class="mains">
+                  <p id="name" class="card_title">{{ item.product.name }}</p>
+                  <p id="ves">{{ item.product.description or '' }}</p>
+                </article>
+                <p id="price-{{ item.product.id }}">{{ "{:,.2f}".format(item.line_total) }} ₽</p>
+                <article class="kolvo" data-product="{{ item.product.id }}">
+                  <input type="button" class="button_Minus" value="-" data-target="{{ item.product.id }}">
+                  <p class="value" id="value-{{ item.product.id }}">{{ item.quantity }}</p>
+                  <input type="button" class="button_Plus" value="+" data-target="{{ item.product.id }}">
+                </article>
+                <button class="del" type="submit" formaction="{{ url_for('site.basket_remove') }}" formmethod="post" name="product_id" value="{{ item.product.id }}">X</button>
+                <input type="hidden" name="qty_{{ item.product.id }}" value="{{ item.quantity }}" class="qty-input" id="qty-{{ item.product.id }}">
+              </article>
+            {% endfor %}
+          </main>
+        </form>
+        
+        <div class="update-btn">
+          <form method="post" action="{{ url_for('site.basket_clear') }}">
+            <button type="submit">Очистить корзину</button>
+          </form>
+        </div>
+      </div>
+
+      <section class="buy">
+        <h1>Ваш заказ</h1>
+        <p>Итого................................................................... <span id="order-total">{{ "{:,.2f}".format(total) }}</span> ₽</p>
+        <button type="button" id="update-cart"><a href="#">Обновить корзину</a></button>
+        <button><a href="#checkout">Перейти к оформлению</a></button>
+      </section>
+    </div>
+
+    <section class="checkout-form" id="checkout">
+      <form method="post" action="{{ url_for('site.basket_checkout') }}">
+        <h2 style="margin-top:0;margin-bottom:20px;">Оформление заказа</h2>
+        <label>Ваше имя *</label>
+        <input name="customer_name" placeholder="Иван" value="{{ current_user.full_name if current_user.is_authenticated else '' }}" required>
+
+        <label>Телефон или e-mail *</label>
+        <input name="phone" placeholder="+7 (999) 000-00-00" value="{{ current_user.email if current_user.is_authenticated else '' }}" required>
+
+      <label>Телефон для связи *</label>
+      <div class="phone-input-wrapper">
+        <span class="phone-prefix">+7</span>
+        <input type="text" name="contact_phone" placeholder="9XX XXX-XX-XX" required>
+      </div>
+      <p class="form-hint">Введите номер без +7 или 8 — код страны добавится автоматически. Например, 9991234567.</p>
+
+        <label>Улица</label>
+        <input name="street" placeholder="Большая Санкт-Петербургская">
+
+        <label>Дом</label>
+        <input name="house" placeholder="39с18">
+
+        <label>Квартира / офис</label>
+        <input name="flat" placeholder="Например, 12">
+
+        <label>Комментарий к заказу</label>
+        <textarea name="comment" rows="3" placeholder="Уточните детали доставки или предпочтения."></textarea>
+
+        <label>Способ оплаты</label>
+        <select name="payment_type">
+          <option value="cash">Наличные при получении</option>
+          <option value="card">Картой курьеру</option>
+          <option value="online">Онлайн</option>
+        </select>
+
+        <button type="submit">Оформить заказ</button>
+        <p style="margin-top:12px;font-size:14px;color:#ccc;">Нажимая на кнопку, вы соглашаетесь с <a href="{{ url_for('site.policy') }}" style="color:#E2B802;">условиями обработки данных</a>.</p>
+      </form>
+    </section>
+  </div>
+{% else %}
+  <div class="empty-basket">
+    <h2>Ваша корзина пуста</h2>
+    <p>Перейдите в <a href="{{ url_for('site.menu') }}">меню</a>, чтобы добавить блюда.</p>
+  </div>
+{% endif %}
+{% endblock %}
+
+{% block extra_scripts %}
+{% if items %}
+  <script>
+    function updateSummary() {
+      let total = 0;
+      document.querySelectorAll('.card[id^="card-"]').forEach(card => {
+        const id = card.id.replace('card-', '');
+        const price = parseFloat(card.dataset.price || '0');
+        const qtyInput = document.getElementById('qty-' + id);
+        const qty = Math.max(1, parseInt(qtyInput.value || '1', 10));
+        qtyInput.value = qty;
+        const lineTotal = price * qty;
+        const priceEl = document.getElementById('price-' + id);
+        if (priceEl) {
+          priceEl.textContent = lineTotal.toFixed(2) + ' ₽';
+        }
+        const valueEl = document.getElementById('value-' + id);
+        if (valueEl) {
+          valueEl.textContent = qty;
+        }
+        total += lineTotal;
+      });
+      const totalEl = document.getElementById('order-total');
+      if (totalEl) {
+        totalEl.textContent = total.toFixed(2);
+      }
+    }
+
+    document.querySelectorAll('.button_Plus').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.target;
+        const hidden = document.getElementById('qty-' + id);
+        let value = parseInt(hidden.value || '0', 10);
+        value = value + 1;
+        hidden.value = value;
+        updateSummary();
+      });
+    });
+    document.querySelectorAll('.button_Minus').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.target;
+        const hidden = document.getElementById('qty-' + id);
+        let value = parseInt(hidden.value || '0', 10);
+        value = Math.max(1, value - 1);
+        hidden.value = value;
+        updateSummary();
+      });
+    });
+
+    updateSummary();
+    document.getElementById('update-cart')?.addEventListener('click', (event) => {
+      event.preventDefault();
+      document.getElementById('basket-update').submit();
+    });
+  </script>
+{% endif %}
+{% endblock %}
+

@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block page_title %}DON Хот-Дог{% endblock %}</title>
+    <link rel="shortcut icon" href="{{ url_for('static', filename='site_src/img/head.png') }}" type="image/png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100..900&display=swap" rel="stylesheet">
+    <script>
+      (function () {
+        try {
+          const saved = localStorage.getItem('siteTheme') || 'dark';
+          document.documentElement.setAttribute('data-site-theme', saved);
+        } catch (error) {
+          document.documentElement.setAttribute('data-site-theme', 'dark');
+        }
+      })();
+    </script>
+    <!-- Общие стили сайта -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='site_src/common.css') }}">
+    <!-- Старые стили для совместимости (будут удалены после миграции) -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='site_src/index.css') }}">
+    <style>
+      /* Дополнительные стили для специфичных страниц */
+      .icon-link {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 35px;
+        height: 35px;
+        border-radius: 8px;
+        background: var(--site-icon-bg);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        position: relative;
+        flex-shrink: 0;
+      }
+      .icon-link:hover {
+        background: var(--site-icon-hover-bg);
+        transform: translateY(-2px);
+      }
+      .icon-link svg {
+        width: 20px;
+        height: 20px;
+        fill: var(--site-icon-fill);
+        transition: fill 0.3s ease;
+      }
+      .icon-link:hover svg {
+        fill: #E2B802;
+      }
+      .theme-toggle {
+        width: 35px;
+        height: 35px;
+        border: none;
+        border-radius: 8px;
+        background: var(--site-icon-bg);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        padding: 0;
+      }
+      .theme-toggle:hover {
+        background: var(--site-icon-hover-bg);
+        transform: translateY(-2px);
+      }
+      .theme-toggle span {
+        font-size: 18px;
+      }
+      .header-icons-group {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-left: auto;
+        margin-right: 20px;
+        flex-shrink: 0;
+      }
+      .btn-crm {
+        background: #000;
+        color: #fff;
+        border-radius: 8px;
+        padding: 0;
+        text-decoration: none;
+        font-family: 'Roboto Slab';
+        font-weight: 600;
+        font-size: 12px;
+        transition: all 0.3s ease;
+        flex-shrink: 0;
+        width: 35px;
+        height: 35px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .btn-crm:hover {
+        color: #E2B802;
+        transform: translateY(-2px);
+      }
+      .footer-icon {
+        width: 31px;
+        height: 31px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 6px;
+        background: var(--site-icon-bg);
+        transition: all 0.3s ease;
+        cursor: pointer;
+        line-height: 0;
+        box-sizing: border-box;
+      }
+      .footer-icon:hover {
+        background: var(--site-icon-hover-bg);
+        transform: translateY(-2px);
+      }
+      .footer-icon svg,
+      .footer-icon img {
+        width: 20px;
+        height: 20px;
+        display: block;
+        margin: 0;
+        padding: 0;
+        vertical-align: middle;
+        object-fit: contain;
+      }
+      .footer-icon svg {
+        fill: var(--site-icon-fill);
+        transition: fill 0.3s ease;
+      }
+      footer .nav {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+      }
+      footer .nav #logo_footer {
+        margin-bottom: 10px;
+      }
+      footer .nav .footer-icons-container {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+      }
+      footer .nav .footer-icon {
+        margin: 0;
+        flex-shrink: 0;
+        align-self: center;
+      }
+      .footer-icon:hover svg {
+        fill: #E2B802;
+      }
+      .buy {
+        width: 363px;
+        background-color: var(--site-surface);
+        border: 1px solid var(--site-border);
+        border-radius: 10px;
+        padding: 28px 24px;
+        position: sticky;
+        top: 100px;
+        flex-shrink: 0;
+        margin: 0 !important;
+        align-self: flex-start;
+        box-sizing: border-box;
+        min-height: 320px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .buy>p {
+        margin: 0 0 20px 0;
+        font-size: 16px;
+        font-family: 'Roboto Slab';
+        font-weight: 300;
+        color: var(--site-text);
+        word-break: break-word;
+      }
+      .buy>h1 {
+        color: var(--site-text);
+        font-size: 20px;
+        font-weight: 500;
+        font-family: 'Roboto Slab';
+        margin: 0 0 20px 0;
+      }
+      .buy>button {
+        background-color: #D7472D;
+        border: none;
+        border-radius: 10px;
+        width: 100%;
+        height: 56px;
+        margin: 12px 0;
+        cursor: pointer;
+      }
+      .buy>button:first-of-type {
+        margin-top: 0;
+      }
+      button>a {
+        color: #000000;
+        text-decoration: none;
+        font-size: 20px;
+        font-family: 'Roboto Slab';
+        font-weight: 500;
+        transition: .2s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        width: 100%;
+      }
+      button>a:hover {
+        color: #E2B802;
+      }
+      .update-btn {
+        margin: 20px 0 0;
+        display: flex;
+        justify-content: flex-start;
+      }
+      .update-btn form {
+        background: var(--site-surface);
+        border: 1px solid var(--site-border);
+        border-radius: 10px;
+        padding: 10px 20px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .update-btn button {
+        background: #D7472D;
+        border: none;
+        border-radius: 10px;
+        color: #000;
+        font-family: 'Roboto Slab';
+        font-size: 18px;
+        font-weight: 600;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: .2s;
+      }
+      .update-btn button:hover {
+        color: #E2B802;
+      }
+      .checkout-form {
+        background: var(--site-surface);
+        border: 1px solid var(--site-border);
+        max-width: 800px;
+        margin: 0 auto 40px;
+        padding: 30px;
+        border-radius: 10px;
+        color: var(--site-text);
+        font-family: 'Roboto Slab';
+        position: relative;
+        z-index: 1;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .checkout-form label {
+        display: block;
+        margin-bottom: 6px;
+        font-size: 16px;
+      }
+      .checkout-form input,
+      .checkout-form textarea,
+      .checkout-form select {
+        width: 100%;
+        background: var(--site-bg);
+        border: 1px solid var(--site-border);
+        border-radius: 10px;
+        color: var(--site-text);
+        font-family: 'Roboto Slab';
+        font-size: 16px;
+        padding: 10px 14px;
+        margin-bottom: 18px;
+        box-sizing: border-box;
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .checkout-form select {
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23E2B802' d='M6 8L0 0h12z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 18px center;
+        padding: 18px 48px 18px 16px;
+        min-height: 60px;
+        margin-left: 0;
+        line-height: 1.4;
+      }
+      .checkout-form button {
+        background: #D7472D;
+        border: none;
+        border-radius: 10px;
+        color: #000;
+        font-size: 20px;
+        font-weight: 600;
+        padding: 12px 24px;
+        cursor: pointer;
+        transition: .2s;
+        width: 100%;
+      }
+      .checkout-form button:hover {
+        color: #E2B802;
+      }
+      .phone-input-wrapper {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        background: var(--site-bg);
+        border: 1px solid var(--site-border);
+        border-radius: 10px;
+        padding: 18px 14px;
+        margin-bottom: 6px;
+        height: 60px;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .phone-prefix {
+        font-family: 'Roboto Slab';
+        font-size: 16px;
+        color: #E2B802;
+        flex-shrink: 0;
+        line-height: 1.5;
+        margin: 0;
+        padding: 0;
+      }
+      .phone-input-wrapper input[type="text"] {
+        border: none;
+        background: transparent;
+        color: var(--site-text);
+        font-family: 'Roboto Slab';
+        font-size: 16px;
+        width: 100%;
+        padding: 0;
+        height: auto;
+        line-height: 1.5;
+        flex: 1;
+        box-sizing: border-box;
+      }
+      .phone-input-wrapper input[type="text"]:focus {
+        outline: none;
+      }
+      .form-hint {
+        margin: 0 0 18px;
+        font-size: 14px;
+        color: var(--site-muted);
+        font-family: 'Roboto Slab';
+      }
+      main {
+        padding-top: 0;
+        width: 100%;
+        max-width: none;
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+      }
+      main>article {
+        background-color: var(--site-surface);
+        border: 1px solid var(--site-border);
+        padding: 20px;
+        margin-bottom: 0;
+        margin-left: 0;
+        display: flex;
+        align-items: flex-start;
+        gap: 20px;
+        border-radius: 10px;
+        color: var(--site-text);
+        width: 100%;
+        max-width: none;
+        box-sizing: border-box;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .card_img {
+        width: 140px;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 10px;
+      }
+      .mains {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .card_title {
+        font-size: 22px;
+        margin: 0;
+      }
+      .kolvo {
+        background-color: var(--site-bg);
+        border: 1px solid var(--site-border);
+        border-radius: 10px;
+        color: var(--site-text);
+        font-size: 18px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        max-width: 110px;
+        min-width: 110px;
+        margin: 0 20px 0 auto;
+        height: 42px;
+        padding: 0 10px;
+      }
+      .kolvo>p {
+        margin: 0;
+      }
+      .kolvo>input {
+        background: none;
+        color: var(--site-text);
+        font-size: 20px;
+        font-family: 'Roboto Slab';
+        border: none;
+        cursor: pointer;
+      }
+      .card p[id^="price-"] {
+        font-size: 20px;
+        font-family: 'Roboto Slab';
+        margin: 0 20px 0 0;
+        min-width: 120px;
+        text-align: right;
+      }
+      .del {
+        color: var(--site-text);
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 22px;
+        transition: .2s;
+        align-self: center;
+        margin: 0;
+      }
+      .del:hover {
+        color: #D7472D;
+      }
+      .footer-icon:hover svg,
+      .icon-link:hover svg,
+      .header-icon:hover svg {
+        fill: #E2B802;
+      }
+      .orders .order,
+      .bonus,
+      .bonus-card {
+        background-color: var(--site-surface);
+        border: 1px solid var(--site-border);
+        transition: background-color 0.3s ease, color 0.3s ease;
+
+      }
+      [data-site-theme="light"] .card,
+      [data-site-theme="light"] .card_1,
+      [data-site-theme="light"] .card_2,
+      [data-site-theme="light"] .card_3,
+      [data-site-theme="light"] .card_4,
+      [data-site-theme="light"] .card_5,
+      [data-site-theme="light"] .bonus,
+      [data-site-theme="light"] .bonus-card,
+      [data-site-theme="light"] .block,
+      [data-site-theme="light"] .block_2,
+      [data-site-theme="light"] .block_3,
+      [data-site-theme="light"] .block_4,
+      [data-site-theme="light"] .block_5,
+      [data-site-theme="light"] .nav_menu,
+      [data-site-theme="light"] .link,
+      [data-site-theme="light"] .buy,
+      [data-site-theme="light"] .checkout-form,
+      [data-site-theme="light"] .orders .order,
+      [data-site-theme="light"] .zakazi,
+      [data-site-theme="light"] .bonus-card,
+      [data-site-theme="light"] .bonus-card *,
+      [data-site-theme="light"] .bonus *,
+      [data-site-theme="light"] .order,
+      [data-site-theme="light"] #reg,
+      [data-site-theme="light"] .kolvo,
+      [data-site-theme="light"] .phone-input-wrapper {
+        background-color: var(--site-surface) !important;
+        color: var(--site-text) !important;
+        border-color: var(--site-border) !important;
+      }
+      [data-site-theme="light"] .link {
+        color: var(--site-text) !important;
+      }
+      [data-site-theme="light"] .btn,
+      [data-site-theme="light"] .bonus-card button,
+      [data-site-theme="light"] .update-btn button {
+        background-color: #d7472d !important;
+        color: #000 !important;
+      }
+    </style>
+    {% block extra_css %}{% endblock %}
+  </head>
+  <body>
+    {% set role_name = None %}
+    {% if current_user.is_authenticated %}
+      {% if current_user.role %}
+        {% set role_name = (current_user.role.name or '').lower() %}
+      {% else %}
+        {% set role_name = (current_user.role_name or '').lower() %}
+      {% endif %}
+    {% endif %}
+    {% include 'site/_header.html' %}
+
+    <div class="site-wrapper">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <section class="flash-wrapper">
+          {% for category, message in messages %}
+            <div class="flash flash-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        </section>
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+      <section class="nav">
+        <a href="{{ url_for('site.home') }}"><img src="{{ url_for('static', filename='site_src/img/logo.svg') }}" id="logo_footer" alt="Don Hot Dog"></a>
+        <div class="footer-icons-container">
+          <a href="#" class="footer-icon" id="tryba_2" title="Телефон">
+            <img src="{{ url_for('static', filename='image/phone.png') }}" alt="Телефон">
+          </a>
+          <a href="https://vk.com/donhotdog53" target="_blank" rel="noopener" class="footer-icon" title="ВКонтакте">
+            <img src="{{ url_for('static', filename='image/vk.png') }}" alt="ВКонтакте">
+          </a>
+          <a href="https://yandex.ru/maps/-/CDF9IXyX" target="_blank" rel="noopener" class="footer-icon" title="Яндекс Карты">
+            <img src="{{ url_for('static', filename='image/geo.png') }}" alt="Яндекс Карты">
+          </a>
+        </div>
+      </section>
+      <section class="main">
+        <p class="zagolovok">DON ХОТ-ДОГ</p>
+        <a href="{{ url_for('site.home') }}#about">О нас</a>
+        <a href="{{ url_for('site.work') }}">Работа у нас</a>
+        <a href="{{ url_for('site.menu') }}">Меню</a>
+        <a href="{{ url_for('site.reviews') }}">Оставить отзыв</a>
+        <a href="{{ url_for('site.home') }}#block_2">Заведения</a>
+      </section>
+      <section class="contacts" id="contacts">
+        <p class="zagolovok">КОНТАКТЫ</p>
+        <article class="footer_txt">
+          <p>Большая Санкт-Петербургская, 39с18,<br>бизнес-центр «Волна», Великий Новгород</p>
+          <p>office@donhotdog.ru</p>
+          <p>+7 (953) 908-35-77</p>
+        </article>
+      </section>
+      <section class="users">
+        <p class="zagolovok">ПОЛЬЗОВАТЕЛЮ</p>
+        <a href="{{ url_for('site.policy') }}">Политика конфиденциальности</a>
+        <a href="#faq">FAQ</a>
+        <p class="predzak">Номер для предзаказа:<br>
+          +7 (929) 629-52-77<br>
+          +7 (911) 629-47-40</p>
+      </section>
+      <section class="last_txt">
+        <h5><span class="colortxt">DON ХОТ-ДОГ</span> — БЫСТРО,<br>УДОБНО, ВКУСНО</h5>
+        <img src="{{ url_for('static', filename='site_src/img/hot_dog.png') }}" id="sticker" alt="Hot dog">
+      </section>
+    </footer>
+
+    {% block extra_scripts %}{% endblock %}
+    <script>
+      (function () {
+        const toggle = document.getElementById('siteThemeToggle');
+        const icon = document.getElementById('siteThemeIcon');
+        const root = document.documentElement;
+        if (!toggle || !icon) {
+          return;
+        }
+        const applyTheme = (theme) => {
+          root.setAttribute('data-site-theme', theme);
+          try {
+            localStorage.setItem('siteTheme', theme);
+          } catch (error) {
+            console.warn('Не удалось сохранить тему', error);
+          }
+          icon.textContent = theme === 'light' ? '🌙' : '☀️';
+        };
+        applyTheme(root.getAttribute('data-site-theme') || 'dark');
+        toggle.addEventListener('click', () => {
+          const nextTheme = root.getAttribute('data-site-theme') === 'light' ? 'dark' : 'light';
+          applyTheme(nextTheme);
+        });
+      })();
+    </script>
+    <script>
+      document.getElementById('tryba')?.addEventListener('click', () => alert('Контактный номер: +7 (911) 629-47-40'));
+      document.getElementById('tryba_2')?.addEventListener('click', () => alert('Контактный номер: +7 (911) 629-47-40'));
+    </script>
+  </body>
+</html>
+

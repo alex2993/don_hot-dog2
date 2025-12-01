@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+{% block content %}
+<style>
+  @keyframes blink-orange { 0% { background-color: rgba(215, 71, 45, 0.25); } 50% { background-color: rgba(215, 71, 45, 0.55); } 100% { background-color: rgba(215, 71, 45, 0.25); } }
+  .status-new { animation: blink-orange 1.2s infinite; border: 1px solid rgba(215, 71, 45, 0.6); border-radius: 6px; padding: 6px 8px; }
+  .status-in-progress { background-color: rgba(255, 235, 59, 0.2); border: 1px solid rgba(255, 235, 59, 0.35); border-radius: 6px; padding: 6px 8px; }
+  .status-done { background-color: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.35); border-radius: 6px; padding: 6px 8px; }
+</style>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Заказы (доставка/самовывоз)</h4>
+  <a class="btn btn-accent" href="{{ url_for('delivery.new') }}">+ Новый заказ</a>
+ </div>
+
+<div class="row g-3">
+  {% for title, lst, cls in [('Новые', new_orders, 'status-new'), ('В работе', in_progress, 'status-in-progress'), ('Выполнены', done, 'status-done'), ('Отменены', cancelled, '')] %}
+  <div class="col-md-3">
+    <div class="card bg-dark border-secondary">
+      <div class="card-body">
+        <h6>{{title}}</h6>
+        <ul class="list-unstyled m-0">
+          {% for o in lst %}
+            <li class="mb-2 {{cls}}">
+              <div class="d-flex justify-content-between align-items-center">
+                <span>#{{o.id}} — {{o.customer_name or o.phone}} — {{o.total}}</span>
+                <a class="btn btn-sm btn-outline-light" href="{{ url_for('delivery.edit', order_id=o.id) }}">Открыть</a>
+              </div>
+              <div class="text-white small">Адрес: {{o.street}} {{o.house}}, кв. {{o.flat}}{% if o.entrance %}, под. {{o.entrance}}{% endif %}{% if o.floor %}, эт. {{o.floor}}{% endif %}</div>
+              {% if o.items %}
+                <div class="text-white small">Позиции: {% for i in o.items %}{{i.product_name}} × {{i.qty}}{% if not loop.last %}, {% endif %}{% endfor %}</div>
+              {% endif %}
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+ </div>
+{% endblock %}
+
+

@@ -1,0 +1,77 @@
+{% extends 'site/layout.html' %}
+{% block page_title %}DON Хот-Дог{% endblock %}
+{% block content %}
+<section class="block_1" id="about">
+  <ul id="slides">
+    <li class="slide showing"><img src="{{ url_for('static', filename='site_src/img/slider_1.png') }}" alt="slider 1"></li>
+    <li class="slide"><img src="{{ url_for('static', filename='site_src/img/slider_2.png') }}" alt="slider 2"></li>
+    <li class="slide"><img src="{{ url_for('static', filename='site_src/img/slider_3.png') }}" alt="slider 3"></li>
+  </ul>
+</section>
+<section class="block_2" id="block_2">
+  <h1>МЫ НЕ ИЗОБРЕЛИ<br> ХОТ-ДОГ</h1>
+  <h2>НО СДЕЛАЛИ ЕГО<br> НЕПОВТОРИМЫМ</h2>
+
+  <div id="map" style="position:relative;overflow:hidden;">
+    <a href="https://yandex.ru/maps/org/don_khot_dog/134267458086/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:0px;">Don Хот Дог</a>
+    <a href="https://yandex.ru/maps/24/veliky-novgorod/category/cafe/184106390/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:14px;">Кафе в Великом Новгороде</a>
+    <a href="https://yandex.ru/maps/24/veliky-novgorod/category/coffee_shop/35193114937/?utm_medium=mapframe&utm_source=maps" style="color:#eee;font-size:12px;position:absolute;top:28px;">Кофейня в Великом Новгороде</a>
+    <iframe src="https://yandex.ru/map-widget/v1/?ll=31.250706%2C58.514878&mode=poi&poi%5Bpoint%5D=31.253744%2C58.520898&poi%5Buri%5D=ymapsbm1%3A%2F%2Forg%3Foid%3D134267458086&z=14.42" width="615" height="544" frameborder="1" allowfullscreen="true" style="position:relative;"></iframe>
+  </div>
+</section>
+<section class="block_3">
+  <article class="icons">
+    <article class="icon" id="card">
+      <article class="card_1">
+        <a href="{{ url_for('site.menu') }}" id="cardText">
+          <p>МЕНЮ</p>
+        </a>
+      </article>
+    </article>
+    <article class="icon" id="card_2">
+      <article class="card_2">
+        <a href="{{ url_for('site.work') }}" id="cardText_2">
+          <p>РАБОТА</p>
+        </a>
+      </article>
+    </article>
+    <article class="icon" id="card_3">
+      <article class="card_3">
+        <a href="#about" id="cardText_3">
+          <p>О DON ХОТ-ДОГ</p>
+        </a>
+      </article>
+    </article>
+  </article>
+  <article class="icons_2">
+    <article class="icon_2" id="card_4">
+      <article class="card_4">
+        <a href="{{ url_for('site.reviews') }}" id="cardText_4">
+          <p>ОСТАВИТЬ ОТЗЫВ</p>
+        </a>
+      </article>
+    </article>
+    <article class="icon_2" id="card_5">
+      <article class="card_5">
+        <a href="https://yandex.ru/maps/-/CDF9IXyX" id="cardText_5">
+          <p>ДОСТАВКА</p>
+        </a>
+      </article>
+    </article>
+    <img id="hd" src="{{ url_for('static', filename='site_src/img/HD.png') }}" alt="Hot Dog">
+  </article>
+</section>
+<section class="block_4">
+  <h4>Почему твои друзья<br>так любят Don Хот-Дог?</h4>
+  <p>Может за оригинальный стильный интерьер? Или хорошую<br>музыку? А может секрет в настоящих сочных
+    хот-догах,<br>приготовленных нами с огромной любовью?</p>
+  <h3>ПРОСТО МЫ ДЕЛАЕМ ТО, ЧТО ЛЮБИМ ВСЕМ СЕРДЦЕМ</h3>
+  <p id="last_p">Заходя к нам после учебы, или на ланч, или во время прогулки<br>ты сможешь не только вкусно
+    поесть и комфортно отдохнуть, но<br>и найти новых друзей, и, конечно же, отлично провести время!</p>
+</section>
+{% endblock %}
+
+{% block extra_scripts %}
+<script src="{{ url_for('static', filename='site_src/index.js') }}"></script>
+{% endblock %}
+

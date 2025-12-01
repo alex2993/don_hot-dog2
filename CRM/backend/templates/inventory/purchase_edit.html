@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4>Поступление товаров</h4>
+  {% if purchase %}
+    <form method="post" action="{{ url_for('inventory.purchase_post', purchase_id=purchase.id) }}">
+      <button class="btn btn-accent" {% if purchase.status=='posted' %}disabled{% endif %}>Провести</button>
+    </form>
+  {% endif %}
+ </div>
+
+{% if not purchase %}
+<div class="card bg-dark border-secondary">
+  <div class="card-body">
+    <form class="row g-2" method="post" action="{{ url_for('inventory.purchase_create') }}">
+      <div class="col-md-4">
+        <label class="form-label">Поставщик</label>
+        <select class="form-select" name="supplier_id">
+          <option value="">—</option>
+          {% for s in suppliers %}<option value="{{s.id}}">{{s.name}}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Склад</label>
+        <select class="form-select" name="warehouse_id" required>
+          {% for w in warehouses %}<option value="{{w.id}}">{{w.name}}</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-4 d-grid align-end"><button class="btn btn-accent" style="margin-top:32px">Создать черновик</button></div>
+    </form>
+  </div>
+ </div>
+{% else %}
+
+<div class="card bg-dark border-secondary mb-3">
+  <div class="card-body">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-2"><strong>Номер:</strong> {{purchase.id}}</div>
+      <div class="col-md-2"><strong>Дата:</strong> {{purchase.date}}</div>
+      <div class="col-md-2"><strong>Статус:</strong> {{purchase.status}}</div>
+      <form class="row g-2 col-md-6" method="post" action="{{ url_for('inventory.purchase_update', purchase_id=purchase.id) }}">
+        <div class="col-md-6">
+          <label class="form-label">Поставщик</label>
+          <select class="form-select" name="supplier_id" {% if purchase.status=='posted' %}disabled{% endif %}>
+            <option value="">—</option>
+            {% for s in suppliers %}<option value="{{s.id}}" {% if purchase.supplier_id==s.id %}selected{% endif %}>{{s.name}}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Склад</label>
+          <select class="form-select" name="warehouse_id" {% if purchase.status=='posted' %}disabled{% endif %}>
+            {% for w in warehouses %}<option value="{{w.id}}" {% if purchase.warehouse_id==w.id %}selected{% endif %}>{{w.name}}</option>{% endfor %}
+          </select>
+        </div>
+        <div class="col-md-12 d-grid"><button class="btn btn-outline-light" {% if purchase.status=='posted' %}disabled{% endif %}>Сохранить шапку</button></div>
+      </form>
+    </div>
+  </div>
+ </div>
+
+<div class="card bg-dark border-secondary">
+  <div class="card-body">
+    <form class="row g-2" method="post" action="{{ url_for('inventory.purchase_add_item', purchase_id=purchase.id) }}">
+      <div class="col-md-6">
+        <label class="form-label">Номенклатура</label>
+        <select class="form-select" name="item_id">
+          {% for i in items %}<option value="{{i.id}}">{{i.name}} ({{i.unit}})</option>{% endfor %}
+        </select>
+      </div>
+      <div class="col-md-3"><label class="form-label">Кол-во</label><input class="form-control" name="qty" type="number" step="0.001" value="1"></div>
+      <div class="col-md-3"><label class="form-label">Цена</label><input class="form-control" name="price" type="number" step="0.001" value="0"></div>
+      <div class="col-md-12 d-grid"><button class="btn btn-outline-light">Добавить позицию</button></div>
+    </form>
+
+    <div class="table-responsive mt-3">
+      <table class="table table-dark table-striped align-middle">
+        <thead><tr><th>#</th><th>Номенклатура</th><th class="text-end">Кол-во</th><th class="text-end">Цена</th><th class="text-end">Сумма</th><th></th></tr></thead>
+        <tbody>
+          {% for l in purchase.items %}
+          <tr>
+            <td>{{l.id}}</td>
+            <td>{{l.item and l.item.name}}</td>
+            <td class="text-end">{{l.qty}}</td>
+            <td class="text-end">{{l.price}}</td>
+            <td class="text-end">{{(l.qty or 0) * (l.price or 0)}}</td>
+            <td class="text-end">
+              <form method="post" action="{{ url_for('inventory.purchase_delete_line', purchase_id=purchase.id, line_id=l.id) }}" onsubmit="return confirm('Удалить позицию?')">
+                <button class="btn btn-sm btn-outline-danger" {% if purchase.status=='posted' %}disabled{% endif %}>Удалить</button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+ </div>
+{% endif %}
+{% endblock %}
+
+
